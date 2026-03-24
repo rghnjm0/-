@@ -193,7 +193,7 @@ def init_database():
     user_count = cursor.fetchone()[0]
 
     if user_count == 0:
-        print("Creating admin and moderator...")
+        print("Creating users...")
         admin_hash = generate_password_hash('admin123')
         cursor.execute(
             "INSERT INTO users (username, display_name, email, password_hash, role, karma, bio, avatar_color) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
@@ -210,30 +210,30 @@ def init_database():
         mod_id = cursor.lastrowid
         print(f"Moderator created with ID: {mod_id} (login: moderator, password: mod123)")
 
-        # Создаем дополнительных пользователей
         user_hash = generate_password_hash('user123')
         cursor.execute(
             "INSERT INTO users (username, display_name, email, password_hash, role, karma, bio, avatar_color) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             ('alex', 'Алексей Смирнов', 'alex@example.com', user_hash, 'user', 42, 'Люблю технологии и программирование', '#16a34a')
         )
         alex_id = cursor.lastrowid
-        print(f"User alex created with ID: {alex_id}")
+        print(f"User alex created with ID: {alex_id} (login: alex, password: user123)")
 
         cursor.execute(
             "INSERT INTO users (username, display_name, email, password_hash, role, karma, bio, avatar_color) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             ('maria', 'Мария Петрова', 'maria@example.com', user_hash, 'user', 78, 'Фотограф и путешественница', '#d97706')
         )
         maria_id = cursor.lastrowid
-        print(f"User maria created with ID: {maria_id}")
+        print(f"User maria created with ID: {maria_id} (login: maria, password: user123)")
 
         cursor.execute(
             "INSERT INTO users (username, display_name, email, password_hash, role, karma, bio, avatar_color) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             ('dmitry', 'Дмитрий Козлов', 'dmitry@example.com', user_hash, 'user', 23, 'Начинающий разработчик', '#9333ea')
         )
         dmitry_id = cursor.lastrowid
-        print(f"User dmitry created with ID: {dmitry_id}")
+        print(f"User dmitry created with ID: {dmitry_id} (login: dmitry, password: user123)")
 
         # 4 сообщества
+        print("\nCreating communities...")
         communities = [
             ('tech', 'Технологии и IT', 'Всё о технологиях, программировании, гаджетах и IT-новостях', admin_id),
             ('photography', 'Фотография', 'Обсуждаем фотографию, делимся работами и советами', admin_id),
@@ -248,12 +248,14 @@ def init_database():
                 (name, display_name, description, owner_id)
             )
             community_ids[name] = cursor.lastrowid
-            print(f"Community r/{name} created with ID: {community_ids[name]}")
+            print(f"  r/{name} created with ID: {community_ids[name]}")
 
         # Подписки на сообщества
+        print("\nCreating subscriptions...")
         subscriptions = [
             (admin_id, community_ids['tech']),
             (admin_id, community_ids['movies']),
+            (admin_id, community_ids['gaming']),
             (mod_id, community_ids['tech']),
             (mod_id, community_ids['gaming']),
             (alex_id, community_ids['tech']),
@@ -273,131 +275,231 @@ def init_database():
                 "UPDATE communities SET subscribers_count = subscribers_count + 1 WHERE id = ?",
                 (community_id,)
             )
+        print(f"  Created {len(subscriptions)} subscriptions")
 
         # 10 постов с контентом
+        print("\nCreating posts...")
         posts_data = [
             # Сообщество tech
             (admin_id, community_ids['tech'], 'Что нового в Python 3.13?',
-             '<p>Python 3.13 приносит много интересных улучшений:</p><ul><li>Улучшенная производительность интерпретатора</li><li>Новые возможности для асинхронного программирования</li><li>Улучшенная обработка ошибок</li><li>Экспериментальная поддержка JIT-компиляции</li></ul><p>Какие фичи вам больше всего понравились?</p>', 12, 3, 5),
+             '<p>Python 3.13 приносит много интересных улучшений:</p><ul><li>Улучшенная производительность интерпретатора</li><li>Новые возможности для асинхронного программирования</li><li>Улучшенная обработка ошибок</li><li>Экспериментальная поддержка JIT-компиляции</li></ul><p>Какие фичи вам больше всего понравились?</p>', 12, 3),
             (alex_id, community_ids['tech'], 'Как я перешел с Windows на Linux',
-             '<p>После 10 лет использования Windows я наконец решился перейти на Linux (Ubuntu).</p><p><strong>Плюсы:</strong> скорость работы, отсутствие рекламы, полный контроль над системой.</p><p><strong>Минусы:</strong> некоторый софт пришлось искать аналоги.</p><p>Поделитесь своим опытом перехода!</p>', 8, 2, 4),
+             '<p>После 10 лет использования Windows я наконец решился перейти на Linux (Ubuntu).</p><p><strong>Плюсы:</strong> скорость работы, отсутствие рекламы, полный контроль над системой.</p><p><strong>Минусы:</strong> некоторый софт пришлось искать аналоги.</p><p>Поделитесь своим опытом перехода!</p>', 8, 2),
             (dmitry_id, community_ids['tech'], 'React vs Vue: что выбрать в 2026?',
-             '<p>Оба фреймворка активно развиваются. React имеет большую экосистему, Vue проще для изучения.</p><p>Что вы предпочитаете и почему?</p>', 15, 5, 8),
+             '<p>Оба фреймворка активно развиваются. React имеет большую экосистему, Vue проще для изучения.</p><p>Что вы предпочитаете и почему?</p>', 15, 5),
 
             # Сообщество photography
             (maria_id, community_ids['photography'], 'Мои лучшие фотографии осени 2025',
-             '<p>Вот несколько кадров, которые мне особенно удались в прошлом году:</p><p>Использовал камеру Sony A7IV с объективом 85mm f/1.8.</p><p>Жду ваших отзывов и советов!</p>', 25, 2, 12),
+             '<p>Вот несколько кадров, которые мне особенно удались в прошлом году:</p><p>Использовал камеру Sony A7IV с объективом 85mm f/1.8.</p><p>Жду ваших отзывов и советов!</p>', 25, 2),
             (admin_id, community_ids['photography'], 'Советы для начинающих фотографов',
-             '<p>Вот несколько важных советов:</p><ul><li>Всегда носите камеру с собой</li><li>Учитесь работать с естественным светом</li><li>Не бойтесь экспериментировать</li><li>Изучайте работы известных фотографов</li></ul><p>Какие советы вы бы добавили?</p>', 18, 1, 9),
+             '<p>Вот несколько важных советов:</p><ul><li>Всегда носите камеру с собой</li><li>Учитесь работать с естественным светом</li><li>Не бойтесь экспериментировать</li><li>Изучайте работы известных фотографов</li></ul><p>Какие советы вы бы добавили?</p>', 18, 1),
             (maria_id, community_ids['photography'], 'Обзор объектива 50mm f/1.8',
-             '<p>Самый доступный светосильный объектив. Отлично подходит для портретов и уличной фотографии.</p><p>Цена/качество - идеально для новичков.</p><p>У кого есть этот объектив? Делитесь фотографиями!</p>', 10, 1, 6),
+             '<p>Самый доступный светосильный объектив. Отлично подходит для портретов и уличной фотографии.</p><p>Цена/качество - идеально для новичков.</p><p>У кого есть этот объектив? Делитесь фотографиями!</p>', 10, 1),
 
             # Сообщество movies
             (mod_id, community_ids['movies'], '10 лучших фильмов 2025 года',
-             '<p>Мой личный топ:</p><ol><li>Дюна: Часть вторая</li><li>Оппенгеймер</li><li>Барби</li><li>Бедные-несчастные</li><li>Мастер</li><li>Субстанция</li><li>Фуриоса</li><li>Ворон</li><li>Смерч 2</li><li>Гладиатор 2</li></ol><p>Согласны? Что добавили бы в этот список?</p>', 35, 4, 15),
+             '<p>Мой личный топ:</p><ol><li>Дюна: Часть вторая</li><li>Оппенгеймер</li><li>Барби</li><li>Бедные-несчастные</li><li>Мастер</li><li>Субстанция</li><li>Фуриоса</li><li>Ворон</li><li>Смерч 2</li><li>Гладиатор 2</li></ol><p>Согласны? Что добавили бы в этот список?</p>', 35, 4),
             (maria_id, community_ids['movies'], 'Сериалы, которые стоит посмотреть',
-             '<p>За последний год особенно впечатлили:</p><ul><li>Медленные лошади (Apple TV+)</li><li>Сёгун (FX/Hulu)</li><li>Фоллаут (Amazon)</li><li>Рипли (Netflix)</li></ul><p>Ваши рекомендации?</p>', 22, 3, 11),
+             '<p>За последний год особенно впечатлили:</p><ul><li>Медленные лошади (Apple TV+)</li><li>Сёгун (FX/Hulu)</li><li>Фоллаут (Amazon)</li><li>Рипли (Netflix)</li></ul><p>Ваши рекомендации?</p>', 22, 3),
             (alex_id, community_ids['movies'], 'Почему "Интерстеллар" остается лучшим научно-фантастическим фильмом',
-             '<p>Спустя 11 лет после выхода "Интерстеллар" всё ещё остаётся эталоном научной фантастики.</p><p>Нолан создал не просто фильм, а настоящее путешествие через время и пространство.</p><p>Что вы думаете о фильме? Какой ваш любимый момент?</p>', 45, 2, 18),
+             '<p>Спустя 11 лет после выхода "Интерстеллар" всё ещё остаётся эталоном научной фантастики.</p><p>Нолан создал не просто фильм, а настоящее путешествие через время и пространство.</p><p>Что вы думаете о фильме? Какой ваш любимый момент?</p>', 45, 2),
 
             # Сообщество gaming
             (admin_id, community_ids['gaming'], 'Лучшие игры 2025: первые впечатления',
-             '<p>В этом году вышло много отличных игр:</p><ul><li>Elden Ring: Shadow of the Erdtree</li><li>Final Fantasy VII Rebirth</li><li>Like a Dragon: Infinite Wealth</li><li>Helldivers 2</li><li>Black Myth: Wukong</li></ul><p>Во что играете сейчас?</p>', 28, 6, 14),
+             '<p>В этом году вышло много отличных игр:</p><ul><li>Elden Ring: Shadow of the Erdtree</li><li>Final Fantasy VII Rebirth</li><li>Like a Dragon: Infinite Wealth</li><li>Helldivers 2</li><li>Black Myth: Wukong</li></ul><p>Во что играете сейчас?</p>', 28, 6),
             (dmitry_id, community_ids['gaming'], 'Почему я люблю инди-игры',
-             '<p>Инди-игры часто предлагают уникальные механики и свежие идеи, которые не найти в AAA-проектах.</p><p>Мои фавориты: Hollow Knight, Stardew Valley, Hades, Celeste.</p><p>Какие инди-игры вы бы порекомендовали?</p>', 12, 2, 7)
+             '<p>Инди-игры часто предлагают уникальные механики и свежие идеи, которые не найти в AAA-проектах.</p><p>Мои фавориты: Hollow Knight, Stardew Valley, Hades, Celeste.</p><p>Какие инди-игры вы бы порекомендовали?</p>', 12, 2)
         ]
 
         post_ids = []
-        for user_id, community_id, title, content, upvotes, downvotes, comments_count in posts_data:
+        for idx, (user_id, community_id, title, content, upvotes, downvotes) in enumerate(posts_data):
             cursor.execute('''
-                INSERT INTO posts (title, content, user_id, community_id, upvotes, downvotes, comments_count, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now', '-1 day', '+' || ? || ' hours'))
-            ''', (title, content, user_id, community_id, upvotes, downvotes, comments_count, len(post_ids) * 2))
+                INSERT INTO posts (title, content, user_id, community_id, upvotes, downvotes, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, datetime('now', '-' || ? || ' hours'))
+            ''', (title, content, user_id, community_id, upvotes, downvotes, idx * 2))
             post_ids.append(cursor.lastrowid)
 
-        print(f"Created {len(post_ids)} posts")
+        print(f"  Created {len(post_ids)} posts")
 
         # Комментарии к постам
+        print("\nCreating comments...")
         comments_data = [
-            # Комментарии к первому посту (Python 3.13)
+            # Пост 1: Python 3.13 (3 комментария)
             (mod_id, post_ids[0], None, 'Отличные новости! Особенно жду улучшения асинхронности.'),
             (alex_id, post_ids[0], None, 'JIT-компиляция звучит очень интересно. Надеюсь, в следующей версии будет стабильно.'),
             (dmitry_id, post_ids[0], None, 'Python становится всё быстрее, это радует!'),
 
-            # Комментарии ко второму посту (Linux)
+            # Пост 2: Linux (3 комментария)
             (mod_id, post_ids[1], None, 'Добро пожаловать в мир Linux! Рекомендую попробовать Arch, если хочется больше контроля.'),
             (admin_id, post_ids[1], None, 'Ubuntu - отличный выбор для начала. Со временем можно перейти на что-то более продвинутое.'),
             (maria_id, post_ids[1], None, 'Я тоже перешла на Linux для работы с фото. GIMP и Darktable работают отлично!'),
 
-            # Комментарии к третьему посту (React vs Vue)
+            # Пост 3: React vs Vue (3 комментария)
             (admin_id, post_ids[2], None, 'React для крупных проектов, Vue для быстрых прототипов. Оба хороши.'),
             (mod_id, post_ids[2], None, 'Vue проще в изучении, но React даёт больше вакансий на рынке.'),
             (alex_id, post_ids[2], None, 'Использую оба. React для работы, Vue для личных проектов.'),
 
-            # Комментарии к посту о фотографиях
+            # Пост 4: Фотографии осени (3 комментария)
             (admin_id, post_ids[3], None, 'Красивые кадры! Особенно понравилась третья фотография.'),
             (dmitry_id, post_ids[3], None, 'Отличная работа! На какой объектив снимали?'),
             (mod_id, post_ids[3], None, 'Прекрасная цветопередача. Как обрабатывали?'),
 
-            # Комментарии к советам для фотографов
+            # Пост 5: Советы фотографам (3 комментария)
             (maria_id, post_ids[4], None, 'Совет: всегда снимайте в RAW, это даёт больше возможностей при обработке.'),
             (alex_id, post_ids[4], None, 'Главное - практика. Чем больше снимаете, тем быстрее прогресс.'),
             (dmitry_id, post_ids[4], None, 'Спасибо за советы, очень полезно для новичка!'),
 
-            # Комментарии к обзору объектива
+            # Пост 6: Обзор объектива 50mm (3 комментария)
             (admin_id, post_ids[5], None, 'Классика. Этот объектив должен быть у каждого фотографа.'),
             (mod_id, post_ids[5], None, 'Согласен, отличный выбор для старта.'),
             (alex_id, post_ids[5], None, 'Тоже пользуюсь, очень доволен качеством.'),
 
-            # Комментарии к топу фильмов
+            # Пост 7: Топ фильмов (3 комментария)
             (admin_id, post_ids[6], None, 'Дюна - однозначно лучший фильм года. Вильнёв гений.'),
             (maria_id, post_ids[6], None, 'Оппенгеймер тоже очень сильный. Нолан вновь на высоте.'),
             (dmitry_id, post_ids[6], None, 'Барби был неожиданно хорош!'),
 
-            # Комментарии к сериалам
+            # Пост 8: Сериалы (3 комментария)
             (mod_id, post_ids[7], None, 'Сёгун - шедевр. Лучший сериал года по версии многих критиков.'),
             (admin_id, post_ids[7], None, 'Фоллаут приятно удивил. Жду второй сезон.'),
             (maria_id, post_ids[7], None, 'Добавьте "Медвежонок" в список, тоже отличный сериал!'),
 
-            # Комментарии к Интерстеллару
+            # Пост 9: Интерстеллар (4 комментария)
             (admin_id, post_ids[8], None, 'Сцена с док-станцией и матч-кат - одна из лучших в истории кино.'),
             (mod_id, post_ids[8], None, 'Ханс Циммер создал гениальный саундтрек. Без него фильм был бы другим.'),
             (maria_id, post_ids[8], None, 'Каждый раз пересматриваю и нахожу что-то новое.'),
             (dmitry_id, post_ids[8], None, 'Согласен на 100%. Лучший sci-fi фильм.'),
 
-            # Комментарии к лучшим играм
+            # Пост 10: Лучшие игры (3 комментария)
             (mod_id, post_ids[9], None, 'Shadow of the Erdtree - дополнение года. FromSoftware снова на высоте.'),
             (alex_id, post_ids[9], None, 'Helldivers 2 - отличная кооперативная игра, провёл уже 100 часов.'),
             (maria_id, post_ids[9], None, 'Black Myth Wukong выглядит потрясающе. Жду выхода.'),
 
-            # Комментарии к инди-играм
+            # Пост 11: Инди-игры (3 комментария)
             (admin_id, post_ids[10], None, 'Hollow Knight - шедевр. Жду Silksong с нетерпением.'),
             (mod_id, post_ids[10], None, 'Hades - лучший roguelike. Супергиант проделали отличную работу.'),
             (alex_id, post_ids[10], None, 'Stardew Valley - антистресс. Идеально после работы.')
         ]
 
+        # Словарь для подсчета комментариев по каждому посту
+        post_comments_count = {post_id: 0 for post_id in post_ids}
+        
         for user_id, post_id, parent_id, content in comments_data:
             cursor.execute('''
                 INSERT INTO comments (content, user_id, post_id, parent_id, upvotes, downvotes)
-                VALUES (?, ?, ?, ?, ?, ?)
-            ''', (content, user_id, post_id, parent_id, 2, 0))
-            comment_id = cursor.lastrowid
+                VALUES (?, ?, ?, ?, 2, 0)
+            ''', (content, user_id, post_id, parent_id))
+            post_comments_count[post_id] += 1
 
-            # Добавляем немного голосов к некоторым комментариям
-            if parent_id is None:
-                cursor.execute('UPDATE posts SET comments_count = comments_count + 1 WHERE id = ?', (post_id,))
+        # Обновляем счетчики комментариев для всех постов
+        for post_id, count in post_comments_count.items():
+            cursor.execute('UPDATE posts SET comments_count = comments_count + ? WHERE id = ?', (count, post_id))
 
-        print(f"Created comments")
+        print(f"  Created {len(comments_data)} comments")
+        for post_id, count in post_comments_count.items():
+            print(f"    Post {post_id}: {count} comments")
+
+        # Добавляем несколько вложенных комментариев (ответы)
+        print("\nCreating nested comments...")
+        nested_comments = [
+            # Ответы на комментарии в посте о Python
+            (alex_id, post_ids[0], 1, 'Согласен, асинхронность становится всё лучше с каждым релизом!'),
+            (dmitry_id, post_ids[0], 2, 'Да, я тоже слышал про JIT. Интересно, насколько ускорит код.'),
+            
+            # Ответы на комментарии в посте о Linux
+            (dmitry_id, post_ids[1], 4, 'Arch звучит сложновато для новичка. Может, попробовать сначала Ubuntu Server?'),
+            (alex_id, post_ids[1], 5, 'Спасибо за поддержку! Уже осваиваюсь постепенно.'),
+            
+            # Ответы на комментарии в посте о React/Vue
+            (dmitry_id, post_ids[2], 7, 'А что насчет Angular? Он всё ещё актуален?'),
+            (maria_id, post_ids[2], 8, 'Да, вакансий по React действительно больше.'),
+            
+            # Ответы на комментарии в посте о фотографиях
+            (maria_id, post_ids[3], 9, 'Спасибо! Снимала на Sigma 35mm f/1.4'),
+            (admin_id, post_ids[3], 10, 'В Lightroom, базовые настройки экспозиции и цветокоррекция.'),
+            
+            # Ответы на комментарии в посте об Интерстеллар
+            (maria_id, post_ids[8], 27, 'Саундтрек действительно гениален, слушаю до сих пор!'),
+            (alex_id, post_ids[8], 28, 'Согласен, каждый раз открываю что-то новое для себя.')
+        ]
+
+        nested_count = 0
+        for user_id, post_id, parent_comment_num, content in nested_comments:
+            # parent_comment_num - это порядковый номер комментария в списке (начиная с 1)
+            # Нужно найти реальный ID комментария
+            cursor.execute('''
+                SELECT id FROM comments 
+                WHERE post_id = ? AND user_id = ? 
+                ORDER BY created_at LIMIT 1 OFFSET ?
+            ''', (post_id, user_id, parent_comment_num - 1))
+            parent = cursor.fetchone()
+            if parent:
+                cursor.execute('''
+                    INSERT INTO comments (content, user_id, post_id, parent_id, upvotes, downvotes)
+                    VALUES (?, ?, ?, ?, 1, 0)
+                ''', (content, user_id, post_id, parent['id']))
+                post_comments_count[post_id] += 1
+                nested_count += 1
+
+        # Обновляем счетчики с учетом вложенных комментариев
+        for post_id, count in post_comments_count.items():
+            cursor.execute('UPDATE posts SET comments_count = ? WHERE id = ?', (count, post_id))
+
+        print(f"  Created {nested_count} nested comments")
+        print(f"  Updated final comments counts")
+
+        # Добавляем голоса за посты от пользователей
+        print("\nAdding votes for posts...")
+        votes_data = [
+            # Голоса за пост 1 (Python)
+            (mod_id, post_ids[0], 'up'), (alex_id, post_ids[0], 'up'), (dmitry_id, post_ids[0], 'up'),
+            (maria_id, post_ids[0], 'up'),
+            # Голоса за пост 2 (Linux)
+            (admin_id, post_ids[1], 'up'), (mod_id, post_ids[1], 'up'), (maria_id, post_ids[1], 'up'),
+            # Голоса за пост 3 (React vs Vue)
+            (admin_id, post_ids[2], 'up'), (mod_id, post_ids[2], 'up'), (dmitry_id, post_ids[2], 'down'),
+            # Голоса за пост 4 (Фотографии)
+            (admin_id, post_ids[3], 'up'), (mod_id, post_ids[3], 'up'), (dmitry_id, post_ids[3], 'up'),
+            (alex_id, post_ids[3], 'up'),
+            # Голоса за пост 5 (Советы)
+            (maria_id, post_ids[4], 'up'), (alex_id, post_ids[4], 'up'), (dmitry_id, post_ids[4], 'up'),
+            # Голоса за пост 6 (Обзор объектива)
+            (admin_id, post_ids[5], 'up'), (mod_id, post_ids[5], 'up'), (maria_id, post_ids[5], 'up'),
+            # Голоса за пост 7 (Топ фильмов)
+            (admin_id, post_ids[6], 'up'), (maria_id, post_ids[6], 'up'), (dmitry_id, post_ids[6], 'up'),
+            (mod_id, post_ids[6], 'up'),
+            # Голоса за пост 8 (Сериалы)
+            (mod_id, post_ids[7], 'up'), (admin_id, post_ids[7], 'up'), (maria_id, post_ids[7], 'up'),
+            # Голоса за пост 9 (Интерстеллар)
+            (admin_id, post_ids[8], 'up'), (mod_id, post_ids[8], 'up'), (maria_id, post_ids[8], 'up'),
+            (dmitry_id, post_ids[8], 'up'), (alex_id, post_ids[8], 'up'),
+            # Голоса за пост 10 (Лучшие игры)
+            (mod_id, post_ids[9], 'up'), (alex_id, post_ids[9], 'up'), (dmitry_id, post_ids[9], 'up'),
+            # Голоса за пост 11 (Инди-игры)
+            (admin_id, post_ids[10], 'up'), (mod_id, post_ids[10], 'up'), (alex_id, post_ids[10], 'up')
+        ]
+
+        for user_id, post_id, vote_type in votes_data:
+            try:
+                cursor.execute('''
+                    INSERT INTO votes (user_id, post_id, vote_type)
+                    VALUES (?, ?, ?)
+                ''', (user_id, post_id, vote_type))
+            except sqlite3.IntegrityError:
+                pass  # Пропускаем дубликаты
+
+        print(f"  Added {len(votes_data)} votes")
 
         # Обновляем карму пользователей
+        print("\nUpdating karma...")
         cursor.execute('UPDATE users SET karma = 150 WHERE id = ?', (admin_id,))
         cursor.execute('UPDATE users SET karma = 85 WHERE id = ?', (mod_id,))
-        cursor.execute('UPDATE users SET karma = 42 WHERE id = ?', (alex_id,))
-        cursor.execute('UPDATE users SET karma = 78 WHERE id = ?', (maria_id,))
-        cursor.execute('UPDATE users SET karma = 23 WHERE id = ?', (dmitry_id,))
+        cursor.execute('UPDATE users SET karma = 45 WHERE id = ?', (alex_id,))
+        cursor.execute('UPDATE users SET karma = 82 WHERE id = ?', (maria_id,))
+        cursor.execute('UPDATE users SET karma = 28 WHERE id = ?', (dmitry_id,))
 
         conn.commit()
-        print("All test data created successfully!")
+        print("\n=== ALL DATA CREATED SUCCESSFULLY ===")
 
     conn.commit()
 
@@ -405,35 +507,61 @@ def init_database():
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
     tables = cursor.fetchall()
     print(f"Tables created: {[t[0] for t in tables]}")
-    cursor.execute("SELECT id, username, display_name, role FROM users")
+    
+    cursor.execute("SELECT id, username, display_name, role, karma FROM users")
     users = cursor.fetchall()
-    print(f"\nUsers in database:")
+    print(f"\nUsers in database ({len(users)}):")
     for user in users:
-        print(f"  ID: {user[0]}, Username: {user[1]}, Display Name: {user[2]}, Role: {user[3]}")
+        print(f"  ID: {user[0]}, Username: {user[1]}, Display: {user[2]}, Role: {user[3]}, Karma: {user[4]}")
+    
     cursor.execute("SELECT COUNT(*) FROM communities")
     communities = cursor.fetchone()[0]
     print(f"\nCommunities in database: {communities}")
+    
     cursor.execute("SELECT COUNT(*) FROM posts")
     posts = cursor.fetchone()[0]
     print(f"Posts in database: {posts}")
+    
     cursor.execute("SELECT COUNT(*) FROM comments")
     comments = cursor.fetchone()[0]
     print(f"Comments in database: {comments}")
+    
+    cursor.execute("SELECT COUNT(*) FROM votes")
+    votes = cursor.fetchone()[0]
+    print(f"Votes in database: {votes}")
+    
     cursor.execute("SELECT COUNT(*) FROM reports WHERE status='pending'")
     pending_reports = cursor.fetchone()[0]
     print(f"Pending reports: {pending_reports}")
+    
+    # Проверяем счетчики комментариев
+    cursor.execute('''
+        SELECT p.id, p.title, p.comments_count, COUNT(c.id) as actual_count
+        FROM posts p
+        LEFT JOIN comments c ON p.id = c.post_id
+        GROUP BY p.id
+        ORDER BY p.id
+    ''')
+    post_counts = cursor.fetchall()
+    print("\nComments count verification:")
+    for post in post_counts:
+        status = "✓" if post['comments_count'] == post['actual_count'] else "✗"
+        print(f"  Post {post['id']}: {post['comments_count']} (stored) vs {post['actual_count']} (actual) {status}")
+    
     conn.close()
+    
     print("\n=== DATABASE INITIALIZATION COMPLETE ===")
-    print("Test credentials:")
-    print("  Admin: admin / admin123")
+    print("\nTest credentials:")
+    print("  Admin:     admin / admin123")
     print("  Moderator: moderator / mod123")
-    print("  Regular users: alex / user123, maria / user123, dmitry / user123")
+    print("  Users:     alex / user123, maria / user123, dmitry / user123")
     print("\nCommunities created:")
-    print("  r/tech - Технологии и IT")
+    print("  r/tech        - Технологии и IT")
     print("  r/photography - Фотография")
-    print("  r/movies - Кино и сериалы")
-    print("  r/gaming - Игровая")
-    print("\nTotal posts created: 11 (10 main + existing welcome post)")
+    print("  r/movies      - Кино и сериалы")
+    print("  r/gaming      - Игровая")
+    print(f"\nTotal posts created: {len(post_ids)}")
+    print(f"Total comments created: {len(comments_data) + nested_count}")
 
 
 def update_database():
@@ -651,11 +779,11 @@ def show_database_status():
     for table in tables:
         print(f"  - {table[0]}")
     print("\n=== USERS ===")
-    cursor.execute("SELECT id, username, display_name, role, is_banned, created_at FROM users")
+    cursor.execute("SELECT id, username, display_name, role, karma, is_banned, created_at FROM users")
     users = cursor.fetchall()
     for user in users:
-        banned = " [BANNED]" if user[4] else ""
-        print(f"  ID: {user[0]}, Username: {user[1]}, Display: {user[2]}, Role: {user[3]}{banned}, Created: {user[5]}")
+        banned = " [BANNED]" if user[5] else ""
+        print(f"  ID: {user[0]}, Username: {user[1]}, Display: {user[2]}, Role: {user[3]}, Karma: {user[4]}{banned}")
     print("\n=== COMMUNITIES ===")
     cursor.execute('''
         SELECT c.id, c.name, c.display_name, u.username, c.subscribers_count
@@ -664,33 +792,32 @@ def show_database_status():
     ''')
     communities = cursor.fetchall()
     for c in communities:
-        print(f"  ID: {c[0]}, Name: {c[1]}, Owner: {c[3]}, Subscribers: {c[4]}")
+        print(f"  ID: {c[0]}, Name: r/{c[1]}, Owner: {c[3]}, Subscribers: {c[4]}")
     print("\n=== POSTS ===")
     cursor.execute('''
-        SELECT p.id, p.title[:40] as title, u.username, c.name as community, p.upvotes - p.downvotes as score
+        SELECT p.id, p.title[:40] as title, u.username, c.name as community, 
+               p.upvotes - p.downvotes as score, p.comments_count
         FROM posts p
         JOIN users u ON p.user_id = u.id
         LEFT JOIN communities c ON p.community_id = c.id
         ORDER BY p.created_at DESC
-        LIMIT 15
     ''')
     posts = cursor.fetchall()
     for p in posts:
         comm = f" [r/{p[3]}]" if p[3] else " [global]"
-        print(f"  ID: {p[0]}, {p[1]}... by {p[2]}{comm} score: {p[4]}")
-    print("\n=== COMMENTS (with nesting) ===")
+        print(f"  ID: {p[0]}, {p[1]}... by {p[2]}{comm} score: {p[4]}, comments: {p[5]}")
+    print("\n=== COMMENTS COUNT BY POST ===")
     cursor.execute('''
-        SELECT c.id, c.content[:50] as content, u.username, 
-               c.parent_id, c.post_id
-        FROM comments c
-        JOIN users u ON c.user_id = u.id
-        ORDER BY c.created_at DESC
-        LIMIT 15
+        SELECT p.id, p.title[:30] as title, p.comments_count, COUNT(c.id) as actual
+        FROM posts p
+        LEFT JOIN comments c ON p.id = c.post_id
+        GROUP BY p.id
+        ORDER BY p.id
     ''')
-    comments = cursor.fetchall()
-    for c in comments:
-        parent = f" (reply to {c[3]})" if c[3] else ""
-        print(f"  ID: {c[0]}, Author: {c[2]}, Content: {c[1]}{parent}")
+    counts = cursor.fetchall()
+    for c in counts:
+        status = "✓" if c[2] == c[3] else "✗"
+        print(f"  Post {c[0]}: {c[1]}... stored: {c[2]}, actual: {c[3]} {status}")
     conn.close()
 
 
