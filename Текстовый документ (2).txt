@@ -2,9 +2,8 @@
 #include "textures.inc"
 
 camera {
-  location <-4, 6, -10>
+  location <-3, 5, -8>
   look_at <0, 2, 0>
-  angle 45
 }
 
 global_settings {
@@ -21,183 +20,104 @@ plane { y, -0.5
   }
 }
 
-// Основной свет спереди-сверху
+// Основной свет
 light_source {
-  <3, 12, -4>
-  color rgb<1, 0.95, 0.9>
+  <4, 10, -5>
+  color White
   shadowless
 }
 
-// Заполняющий свет сбоку
+// Заполняющий свет
 light_source {
-  <-4, 5, -3>
+  <-3, 5, -4>
   color rgb<0.7, 0.75, 0.85>
-  fade_distance 12
-  fade_power 2
-}
-
-// Контровой свет сзади
-light_source {
-  <0, 4, 6>
-  color Gray * 0.6
   fade_distance 10
   fade_power 2
 }
 
-// Свет снизу для бликов на перекладинах
+// Свет сзади
 light_source {
-  <0, -2, 0>
-  color rgb<0.5, 0.45, 0.4>
+  <0, 4, 6>
+  color Gray * 0.5
   fade_distance 8
   fade_power 2
 }
 
 // ============================================
-// ШКОЛЬНЫЙ СТУЛ С ПЕРЕКЛАДИНАМИ
+// ШКОЛЬНЫЙ СТУЛ С ДВУМЯ НОЖКАМИ
 // ============================================
 
-#declare WoodColor = rgb<0.55, 0.35, 0.2>;
-#declare DarkWood = rgb<0.45, 0.28, 0.15>;
-#declare MetalColor = rgb<0.3, 0.3, 0.32>;
+#declare WoodColor = rgb<0.6, 0.4, 0.22>;
+#declare LightWood = rgb<0.7, 0.5, 0.3>;
 
-#declare LegRadius = 0.09;
-#declare LegHeight = 1.85;
+#declare LegRadius = 0.12;
+#declare LegHeight = 1.8;
 #declare SeatHeight = 0.48;
 #declare SeatThick = 0.1;
-#declare LegOffset = 0.65;
 
-// ===== НОЖКИ (4 штуки) =====
+// ===== ДВЕ НОЖКИ (широкие, как лыжи) =====
 
-// Задняя левая ножка (выше - для спинки)
-cylinder { 
-  <-LegOffset, -0.5, -LegOffset>, 
-  <-LegOffset, LegHeight - 0.3, -LegOffset>, 
-  LegRadius
-  pigment { DarkWood }
-  finish { specular 0.35 roughness 0.08 }
-}
-
-// Задняя правая ножка
-cylinder { 
-  <LegOffset, -0.5, -LegOffset>, 
-  <LegOffset, LegHeight - 0.3, -LegOffset>, 
-  LegRadius
-  pigment { DarkWood }
-  finish { specular 0.35 roughness 0.08 }
-}
-
-// Передняя левая ножка
-cylinder { 
-  <-LegOffset, -0.5, LegOffset + 0.05>, 
-  <-LegOffset, SeatHeight - 0.15, LegOffset + 0.05>, 
-  LegRadius
+// Левая ножка (цельная, от пола до сиденья)
+box {
+  <-0.65, -0.5, -0.55>,
+  <-0.45, SeatHeight - 0.05, 0.55>
   pigment { WoodColor }
   finish { specular 0.3 roughness 0.1 }
 }
 
-// Передняя правая ножка
-cylinder { 
-  <LegOffset, -0.5, LegOffset + 0.05>, 
-  <LegOffset, SeatHeight - 0.15, LegOffset + 0.05>, 
-  LegRadius
+// Правая ножка
+box {
+  <0.45, -0.5, -0.55>,
+  <0.65, SeatHeight - 0.05, 0.55>
   pigment { WoodColor }
   finish { specular 0.3 roughness 0.1 }
 }
 
-// ===== ГОРИЗОНТАЛЬНЫЕ ПЕРЕКЛАДИНЫ =====
-// (соединяют передние и задние ножки)
-
-#declare BarRadius = 0.07;
-#declare BarYPos = 0.25;  // высота перекладин от пола
-
-// Левая перекладина (соединяет левую переднюю и левую заднюю ножки)
-cylinder {
-  <-LegOffset, -0.5 + BarYPos, -LegOffset + 0.02>,
-  <-LegOffset, -0.5 + BarYPos, LegOffset + 0.03>,
-  BarRadius
-  pigment { WoodColor }
-  finish { specular 0.25 roughness 0.12 }
-}
-
-// Правая перекладина (соединяет правую переднюю и правую заднюю ножки)
-cylinder {
-  <LegOffset, -0.5 + BarYPos, -LegOffset + 0.02>,
-  <LegOffset, -0.5 + BarYPos, LegOffset + 0.03>,
-  BarRadius
-  pigment { WoodColor }
-  finish { specular 0.25 roughness 0.12 }
-}
-
-// ===== ПОПЕРЕЧНЫЕ ПЕРЕКЛАДИНЫ (между левой и правой) =====
-
-// Передняя поперечная
-cylinder {
-  <-LegOffset + 0.03, -0.5 + BarYPos + 0.1, LegOffset + 0.05>,
-  <LegOffset - 0.03, -0.5 + BarYPos + 0.1, LegOffset + 0.05>,
-  BarRadius * 0.9
-  pigment { WoodColor }
-  finish { specular 0.25 roughness 0.12 }
-}
-
-// Задняя поперечная
-cylinder {
-  <-LegOffset + 0.03, -0.5 + BarYPos + 0.1, -LegOffset + 0.02>,
-  <LegOffset - 0.03, -0.5 + BarYPos + 0.1, -LegOffset + 0.02>,
-  BarRadius * 0.9
-  pigment { DarkWood }
+// ===== ПОПЕРЕЧНАЯ ПЕРЕКЛАДИНА (между ножками) =====
+box {
+  <-0.45, -0.2, -0.5>,
+  <0.45, -0.05, 0.5>
+  pigment { LightWood }
   finish { specular 0.25 roughness 0.12 }
 }
 
 // ===== СИДЕНЬЕ =====
 box {
-  <-0.72, SeatHeight - 0.08, -0.68>,
-  <0.72, SeatHeight, 0.72>
-  pigment { WoodColor }
+  <-0.7, SeatHeight - 0.08, -0.65>,
+  <0.7, SeatHeight, 0.65>
+  pigment { LightWood }
   finish { specular 0.4 roughness 0.08 }
 }
 
-// ===== СПИНКА =====
+// ===== СПИНКА (широкая, крепится к задней части сиденья) =====
 box {
-  <-0.68, SeatHeight, -0.62>,
-  <0.68, LegHeight - 0.15, -0.48>
-  pigment { DarkWood }
+  <-0.65, SeatHeight, -0.55>,
+  <0.65, LegHeight - 0.2, -0.4>
+  pigment { WoodColor }
   finish { specular 0.35 roughness 0.09 }
 }
 
-// ===== ВЕРХНЯЯ ПЛАНКА СПИНКИ (горизонтальная) =====
+// ===== ВЕРХНЯЯ ПЛАНКА СПИНКИ =====
 box {
-  <-0.72, LegHeight - 0.08, -0.61>,
-  <0.72, LegHeight + 0.02, -0.49>
-  pigment { DarkWood }
+  <-0.68, LegHeight - 0.15, -0.54>,
+  <0.68, LegHeight - 0.02, -0.41>
+  pigment { WoodColor }
   finish { specular 0.35 roughness 0.09 }
 }
-
-// ===== ЗАКРУГЛЕНИЕ ВЕРХА СПИНКИ =====
-cylinder {
-  <0, LegHeight + 0.02, -0.55>,
-  <0, LegHeight + 0.02, -0.55>,
-  0.72
-  pigment { DarkWood }
-  finish { specular 0.3 roughness 0.08 }
-  rotate <90, 0, 0>
-  scale <1, 1, 0.1>
-}
-
-// ===== МЕТАЛЛИЧЕСКИЕ СОЕДИНЕНИЯ (в местах крепления) =====
-#declare ConnectorSize = 0.05;
-
-// Соединения на задних ножках
-sphere { <-LegOffset, LegHeight - 0.32, -LegOffset> ConnectorSize pigment { MetalColor } finish { specular 0.7 roughness 0.05 } }
-sphere { <LegOffset, LegHeight - 0.32, -LegOffset> ConnectorSize pigment { MetalColor } finish { specular 0.7 roughness 0.05 } }
-
-// Соединения на передних ножках
-sphere { <-LegOffset, SeatHeight - 0.17, LegOffset + 0.05> ConnectorSize pigment { MetalColor } finish { specular 0.7 roughness 0.05 } }
-sphere { <LegOffset, SeatHeight - 0.17, LegOffset + 0.05> ConnectorSize pigment { MetalColor } finish { specular 0.7 roughness 0.05 } }
 
 // ===== НОЖКИ-ЗАГЛУШКИ (резиновые наконечники) =====
 #declare TipColor = rgb<0.2, 0.2, 0.2>;
 
-cylinder { <-LegOffset, -0.52, -LegOffset> <-LegOffset, -0.48, -LegOffset> LegRadius * 1.1 pigment { TipColor } finish { specular 0.1 roughness 0.3 } }
-cylinder { <LegOffset, -0.52, -LegOffset> <LegOffset, -0.48, -LegOffset> LegRadius * 1.1 pigment { TipColor } finish { specular 0.1 roughness 0.3 } }
-cylinder { <-LegOffset, -0.52, LegOffset + 0.05> <-LegOffset, -0.48, LegOffset + 0.05> LegRadius * 1.1 pigment { TipColor } finish { specular 0.1 roughness 0.3 } }
-cylinder { <LegOffset, -0.52, LegOffset + 0.05> <LegOffset, -0.48, LegOffset + 0.05> LegRadius * 1.1 pigment { TipColor } finish { specular 0.1 roughness 0.3 } }
+box {
+  <-0.66, -0.52, -0.56>,
+  <-0.44, -0.48, 0.56>
+  pigment { TipColor }
+  finish { specular 0.1 roughness 0.3 }
+}
+
+box {
+  <0.44, -0.52, -0.56>,
+  <0.66, -0.48, 0.56>
+  pigment { TipColor }
+  finish { specular 0.1 roughness 0.3 }
+}
