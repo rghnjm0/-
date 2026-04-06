@@ -82,71 +82,73 @@ box { <-8.5, -1, 5>,
       }                          
  }   
 
-// ========== ЗАКЛЁПКИ НА СПИНКЕ (2 цилиндра ВНУТРИ) ==========
-// Верхняя заклёпка (цилиндр, утопленный в спинку)
+// ========== ЗАКЛЁПКИ НА СПИНКЕ (2 болта ПО ЦЕНТРУ, ВНУТРИ) ==========
+// Верхний болт по центру спинки
 cylinder { 
    <-8.4, 1.2, 9.95>, 
    <-8.4, 1.2, 10.15>, 
    0.1
    texture { 
-      pigment { color rgb <0.8, 0.6, 0.15> } 
-      finish { specular 0.6 roughness 0.02 }
+      pigment { color rgb <0.7, 0.7, 0.75> } 
+      finish { specular 0.8 roughness 0.01 metallic }
    }
 }
 
-// Нижняя заклёпка (цилиндр, утопленный в спинку)
+// Нижний болт по центру спинки
 cylinder { 
    <-8.4, 0.2, 9.95>, 
    <-8.4, 0.2, 10.15>, 
    0.1
    texture { 
-      pigment { color rgb <0.8, 0.6, 0.15> } 
-      finish { specular 0.6 roughness 0.02 }
+      pigment { color rgb <0.7, 0.7, 0.75> } 
+      finish { specular 0.8 roughness 0.01 metallic }
    }
 }
 
-// ========== ЗАКЛЁПКИ НА СИДЕНЬЕ (4 цилиндра ВНУТРИ) ==========
-// Передние заклёпки (цилиндры уходят вниз в сиденье)
-cylinder { 
-   <-7.5, -3.95, 5.2>, 
-   <-7.5, -3.75, 5.2>, 
-   0.09
-   texture { 
-      pigment { color rgb <0.8, 0.6, 0.15> } 
-      finish { specular 0.6 roughness 0.02 }
+// Шляпки болтов (шестигранный вид через цилиндр с фаской)
+#macro BoltHead(x, y, z)
+   union {
+      // Основная шляпка
+      cylinder { <x, y, z-0.02>, <x, y, z+0.02>, 0.13 }
+      // Фаска (маленький цилиндр сверху)
+      cylinder { <x, y, z-0.01>, <x, y, z+0.01>, 0.1 }
+      // Крестообразный шлиц
+      box { <x-0.06, y, z-0.03>, <x+0.06, y, z+0.03> }
+      box { <x-0.03, y, z-0.06>, <x+0.03, y, z+0.06> }
    }
-}
+#end
 
-cylinder { 
-   <-5.5, -3.95, 5.2>, 
-   <-5.5, -3.75, 5.2>, 
-   0.09
-   texture { 
-      pigment { color rgb <0.8, 0.6, 0.15> } 
-      finish { specular 0.6 roughness 0.02 }
-   }
-}
+// Шляпки болтов на спинке
+object { BoltHead(-8.4, 1.2, 10.05) texture { pigment { color rgb <0.7, 0.7, 0.75> } finish { specular 0.8 metallic } } }
+object { BoltHead(-8.4, 0.2, 10.05) texture { pigment { color rgb <0.7, 0.7, 0.75> } finish { specular 0.8 metallic } } }
 
-// Задние заклёпки
-cylinder { 
-   <-7.5, -3.95, 9.7>, 
-   <-7.5, -3.75, 9.7>, 
-   0.09
-   texture { 
-      pigment { color rgb <0.8, 0.6, 0.15> } 
-      finish { specular 0.6 roughness 0.02 }
+// ========== ЗАКЛЁПКИ НА СИДЕНЬЕ (4 болта) ==========
+#macro BoltOnSeat(x, z)
+   union {
+      // Цилиндр болта (утоплен в сиденье)
+      cylinder { 
+         <x, -3.95, z>, 
+         <x, -3.73, z>, 
+         0.09
+         texture { 
+            pigment { color rgb <0.7, 0.7, 0.75> } 
+            finish { specular 0.8 roughness 0.01 metallic }
+         }
+      }
+      // Шляпка болта
+      cylinder { <x, -3.72, z>, <x, -3.68, z>, 0.13 }
+      cylinder { <x, -3.71, z>, <x, -3.69, z>, 0.1 }
+      // Шлиц
+      box { <x-0.06, -3.7, z-0.02>, <x+0.06, -3.69, z+0.02> }
+      box { <x-0.02, -3.7, z-0.06>, <x+0.02, -3.69, z+0.06> }
    }
-}
+#end
 
-cylinder { 
-   <-5.5, -3.95, 9.7>, 
-   <-5.5, -3.75, 9.7>, 
-   0.09
-   texture { 
-      pigment { color rgb <0.8, 0.6, 0.15> } 
-      finish { specular 0.6 roughness 0.02 }
-   }
-}
+// 4 болта на сиденье
+object { BoltOnSeat(-7.5, 5.2) }
+object { BoltOnSeat(-5.5, 5.2) }
+object { BoltOnSeat(-7.5, 9.7) }
+object { BoltOnSeat(-5.5, 9.7) }
 
 // ========== ОСТАЛЬНЫЕ ДЕТАЛИ ==========
  
