@@ -1,204 +1,184 @@
-// Школьный стул с 2 ножками - современный дизайн
+// Ученический стул для POV-Ray
+// Компиляция: povray +W800 +H600 +A0.3 +Q9 chair.pov
+
+#version 3.7;
+
+#include "colors.inc"
+#include "textures.inc"
+
+global_settings {
+    ambient_light rgb <0.3, 0.3, 0.3>
+    assumed_gamma 1.0
+}
+
 // Камера
 camera {
-    location <2.5, 1.8, -3>
+    perspective
+    location <2, 1.5, -2>
     look_at <0, 0.6, 0>
-    angle 55
+    angle 45
 }
 
-// Освещение
+// Источники света
 light_source {
-    <3, 8, -4>
-    color rgb <1, 1, 1>
-}
-
-light_source {
-    <-2, 4, -3>
-    color rgb <0.8, 0.8, 0.8>
+    <3, 5, -2>
+    color White
+    shadowless
 }
 
 light_source {
-    <0, 3, 2>
-    color rgb <0.6, 0.6, 0.6>
+    <-2, 4, 3>
+    color White
 }
 
-background {
-    color rgb <0.92, 0.92, 0.96>
+light_source {
+    <0, 3, -4>
+    color rgb <0.8, 0.8, 0.9>
 }
 
+// Пол (небольшая тень)
 plane {
-    y, -0.1
-    pigment { 
-        checker color rgb <0.85, 0.85, 0.85>, color rgb <0.75, 0.75, 0.75>
-        scale 0.3
+    y, -0.05
+    pigment { color rgb <0.85, 0.85, 0.9> }
+    finish { ambient 0.2 diffuse 0.8 }
+}
+
+// ========== ОСНОВНЫЕ ПАРАМЕТРЫ ==========
+#declare SeatWidth   = 0.45;   // ширина сиденья
+#declare SeatDepth   = 0.42;   // глубина сиденья
+#declare SeatHeight  = 0.05;   // толщина сиденья
+#declare LegHeight   = 0.48;   // высота ножек
+#declare LegThick    = 0.035;  // толщина ножек
+#declare BackHeight  = 0.40;   // высота спинки
+#declare BackThick   = 0.03;   // толщина спинки
+
+// ========== ТЕКСТУРЫ ==========
+#declare WoodTexture = texture {
+    pigment { color rgb <0.7, 0.45, 0.25> }
+    finish { specular 0.3 roughness 0.05 }
+    normal { bumps 0.3 scale 0.02 }
+}
+
+#declare MetalTexture = texture {
+    pigment { color Gray50 }
+    finish { specular 0.7 roughness 0.01 metallic }
+}
+
+#declare SeatTexture = texture {
+    pigment { color rgb <0.65, 0.4, 0.22> }
+    finish { specular 0.2 roughness 0.1 }
+    normal { wood 0.5 scale 0.03 }
+}
+
+// ========== НОЖКИ (4 штуки) ==========
+#macro Leg(x, z)
+    box {
+        < -LegThick/2, 0, -LegThick/2 >,
+        <  LegThick/2, LegHeight, LegThick/2 >
+        texture { MetalTexture }
+        translate < x, -0.05, z >
     }
-}
+#end
 
-// ========== ОСНОВНЫЕ НОЖКИ (ИЗОГНУТЫЕ) ==========
-// Левая ножка (с наклоном наружу)
+// ========== ПЕРЕМЫЧКИ МЕЖДУ НОЖКАМИ ==========
+#macro Stretcher(x1, z1, x2, z2, yLevel)
+    #local dx = x2 - x1;
+    #local dz = z2 - z1;
+    #local len = sqrt(dx*dx + dz*dz);
+    #local ang = degrees(atan2(dz, dx));
+    
+    box {
+        < -LegThick/2, -LegThick/2, -LegThick/2 >,
+        <  len + LegThick/2, LegThick/2, LegThick/2 >
+        texture { MetalTexture }
+        rotate y*ang
+        translate < x1, yLevel, z1 >
+    }
+#end
+
+// ========== СИДЕНЬЕ ==========
+#macro Seat()
+    box {
+        < -SeatWidth/2, 0, -SeatDepth/2 >,
+        <  SeatWidth/2, SeatHeight, SeatDepth/2 >
+        texture { SeatTexture }
+    }
+#end
+
+// ========== СПИНКА ==========
+#macro Backrest()
+    // Основная часть спинки
+    box {
+        < -SeatWidth/2 + 0.03, 0, -BackThick/2 >,
+        <  SeatWidth/2 - 0.03, BackHeight, BackThick/2 >
+        texture { WoodTexture }
+    }
+    
+    // Верхняя планка (скругление)
+    box {
+        < -SeatWidth/2 + 0.01, BackHeight - 0.02, -BackThick/2 - 0.005 >,
+        <  SeatWidth/2 - 0.01, BackHeight + 0.02, BackThick/2 + 0.005 >
+        texture { WoodTexture }
+    }
+#end
+
+// ========== ПОСТРОЕНИЕ СТУЛА ==========
 union {
-    box { <-0.45, -0.05, -0.28>, <-0.35, 0.65, 0.28> }
-    box { <-0.55, 0.55, -0.25>, <-0.25, 0.65, 0.25> }
-    pigment { color rgb <0.58, 0.38, 0.18> }
-    finish { phong 0.7 reflection 0.1 }
+    // Ножки
+    Leg( SeatWidth/2 - LegThick,  SeatDepth/2 - LegThick )
+    Leg( SeatWidth/2 - LegThick, -SeatDepth/2 + LegThick )
+    Leg(-SeatWidth/2 + LegThick,  SeatDepth/2 - LegThick )
+    Leg(-SeatWidth/2 + LegThick, -SeatDepth/2 + LegThick )
+    
+    // Перемычки (царги)
+    Stretcher( SeatWidth/2 - LegThick,  SeatDepth/2 - LegThick,
+              -SeatWidth/2 + LegThick,  SeatDepth/2 - LegThick, LegHeight*0.6 )
+    Stretcher( SeatWidth/2 - LegThick, -SeatDepth/2 + LegThick,
+              -SeatWidth/2 + LegThick, -SeatDepth/2 + LegThick, LegHeight*0.6 )
+    Stretcher( SeatWidth/2 - LegThick,  SeatDepth/2 - LegThick,
+               SeatWidth/2 - LegThick, -SeatDepth/2 + LegThick, LegHeight*0.6 )
+    Stretcher(-SeatWidth/2 + LegThick,  SeatDepth/2 - LegThick,
+              -SeatWidth/2 + LegThick, -SeatDepth/2 + LegThick, LegHeight*0.6 )
+    
+    // Сиденье
+    object { Seat() translate y*LegHeight }
+    
+    // Спинка
+    object { Backrest() 
+             translate <0, LegHeight + SeatHeight, -SeatDepth/2 + BackThick/2> }
+    
+    // Боковые опоры спинки (соединение со спинкой)
+    #declare SideSupportHeight = 0.25;
+    box {
+        < SeatWidth/2 - 0.05, LegHeight + SeatHeight, -SeatDepth/2 + 0.02 >,
+        < SeatWidth/2 - 0.02, LegHeight + SeatHeight + SideSupportHeight, -SeatDepth/2 + 0.07 >
+        texture { WoodTexture }
+    }
+    box {
+        < -SeatWidth/2 + 0.02, LegHeight + SeatHeight, -SeatDepth/2 + 0.02 >,
+        < -SeatWidth/2 + 0.05, LegHeight + SeatHeight + SideSupportHeight, -SeatDepth/2 + 0.07 >
+        texture { WoodTexture }
+    }
+    
+    // Декоративные заглушки на ножках
+    #declare CapSize = LegThick + 0.008;
+    #macro Cap(x, z)
+        sphere {
+            <0,0,0>, CapSize/2
+            texture { MetalTexture }
+            translate < x, LegHeight - 0.01, z >
+        }
+    #end
+    
+    Cap( SeatWidth/2 - LegThick,  SeatDepth/2 - LegThick )
+    Cap( SeatWidth/2 - LegThick, -SeatDepth/2 + LegThick )
+    Cap(-SeatWidth/2 + LegThick,  SeatDepth/2 - LegThick )
+    Cap(-SeatWidth/2 + LegThick, -SeatDepth/2 + LegThick )
 }
 
-// Правая ножка (с наклоном наружу)
-union {
-    box { <0.35, -0.05, -0.28>, <0.45, 0.65, 0.28> }
-    box { <0.25, 0.55, -0.25>, <0.55, 0.65, 0.25> }
-    pigment { color rgb <0.58, 0.38, 0.18> }
-    finish { phong 0.7 reflection 0.1 }
-}
-
-// ========== ПОПЕРЕЧНЫЕ ПЕРЕКЛАДИНЫ ==========
-// Передняя перекладина (широкая, как подножка)
-box {
-    <-0.45, 0.05, -0.35>, <0.45, 0.12, -0.25>
-    pigment { color rgb <0.52, 0.32, 0.12> }
-    finish { phong 0.6 }
-}
-
-// Задняя перекладина
-box {
-    <-0.45, 0.05, 0.25>, <0.45, 0.12, 0.35>
-    pigment { color rgb <0.52, 0.32, 0.12> }
-    finish { phong 0.6 }
-}
-
-// Нижняя левая перекладина
-box {
-    <-0.48, -0.08, -0.25>, <-0.32, -0.01, 0.25>
-    pigment { color rgb <0.52, 0.32, 0.12> }
-    finish { phong 0.6 }
-}
-
-// Нижняя правая перекладина
-box {
-    <0.32, -0.08, -0.25>, <0.48, -0.01, 0.25>
-    pigment { color rgb <0.52, 0.32, 0.12> }
-    finish { phong 0.6 }
-}
-
-// Крестообразная перекладина для устойчивости (X-образная)
-union {
-    box { <-0.4, 0.02, -0.22>, <0.4, 0.08, -0.18> }
-    box { <-0.4, 0.02, 0.18>, <0.4, 0.08, 0.22> }
-    box { <-0.22, 0.02, -0.4>, <-0.18, 0.08, 0.4> }
-    box { <0.18, 0.02, -0.4>, <0.22, 0.08, 0.4> }
-    pigment { color rgb <0.55, 0.35, 0.15> }
-    finish { phong 0.5 }
-}
-
-// ========== СИДЕНЬЕ (ЭРГОНОМИЧНОЕ) ==========
-// Основное сиденье
-box {
-    <-0.52, 0.65, -0.42>, <0.52, 0.73, 0.38>
-    pigment { color rgb <0.62, 0.42, 0.22> }
-    finish { phong 0.8 }
-}
-
-// Скругление переднего края сиденья
-box {
-    <-0.52, 0.73, -0.42>, <0.52, 0.76, -0.35>
-    pigment { color rgb <0.6, 0.4, 0.2> }
-    finish { phong 0.7 }
-}
-
-// Боковые закругления
-box {
-    <-0.55, 0.65, -0.42>, <-0.49, 0.73, 0.38>
-    pigment { color rgb <0.6, 0.4, 0.2> }
-}
-
-box {
-    <0.49, 0.65, -0.42>, <0.55, 0.73, 0.38>
-    pigment { color rgb <0.6, 0.4, 0.2> }
-}
-
-// ========== СПИНКА (ИЗОГНУТАЯ, АНАТОМИЧЕСКАЯ) ==========
-// Основная часть спинки
-box {
-    <-0.48, 0.65, 0.35>, <0.48, 1.15, 0.48>
-    pigment { color rgb <0.62, 0.42, 0.22> }
-    finish { phong 0.8 }
-}
-
-// Верхнее закругление спинки
-box {
-    <-0.48, 1.12, 0.35>, <0.48, 1.18, 0.48>
-    pigment { color rgb <0.6, 0.4, 0.2> }
-}
-
-// Боковые поддержки спинки
-box {
-    <-0.5, 0.65, 0.35>, <-0.44, 1.15, 0.44>
-    pigment { color rgb <0.58, 0.38, 0.18> }
-}
-
-box {
-    <0.44, 0.65, 0.35>, <0.5, 1.15, 0.44>
-    pigment { color rgb <0.58, 0.38, 0.18> }
-}
-
-// ========== ДЕКОРАТИВНЫЕ ЭЛЕМЕНТЫ ==========
-// Полосы на спинке (декор)
-box {
-    <-0.44, 0.75, 0.475>, <0.44, 0.78, 0.485>
-    pigment { color rgb <0.4, 0.25, 0.1> }
-}
-
-box {
-    <-0.44, 0.85, 0.475>, <0.44, 0.88, 0.485>
-    pigment { color rgb <0.4, 0.25, 0.1> }
-}
-
-box {
-    <-0.44, 0.95, 0.475>, <0.44, 0.98, 0.485>
-    pigment { color rgb <0.4, 0.25, 0.1> }
-}
-
-// Металлические наконечники на ножках
-union {
-    box { <-0.47, -0.08, -0.3>, <-0.33, -0.02, 0.3> }
-    box { <0.33, -0.08, -0.3>, <0.47, -0.02, 0.3> }
-    pigment { color rgb <0.7, 0.7, 0.75> }
-    finish { phong 0.9 reflection 0.3 }
-}
-
-// Резиновые накладки на ножках (чтобы не царапали пол)
-union {
-    sphere { <-0.4, -0.08, -0.25> 0.04 }
-    sphere { <-0.4, -0.08, 0.25> 0.04 }
-    sphere { <0.4, -0.08, -0.25> 0.04 }
-    sphere { <0.4, -0.08, 0.25> 0.04 }
-    pigment { color rgb <0.2, 0.2, 0.25> }
-    finish { phong 0.5 }
-}
-
-// ========== ПОДЛОКОТНИКИ (ОПЦИОНАЛЬНО) ==========
-// Левый подлокотник
-union {
-    box { <-0.55, 0.73, -0.2>, <-0.48, 0.78, 0.2> }
-    box { <-0.6, 0.78, -0.15>, <-0.43, 0.83, 0.15> }
-    pigment { color rgb <0.6, 0.4, 0.2> }
-    finish { phong 0.7 }
-}
-
-// Правый подлокотник
-union {
-    box { <0.48, 0.73, -0.2>, <0.55, 0.78, 0.2> }
-    box { <0.43, 0.78, -0.15>, <0.6, 0.83, 0.15> }
-    pigment { color rgb <0.6, 0.4, 0.2> }
-    finish { phong 0.7 }
-}
-
-// Металлические крепления подлокотников
-union {
-    cylinder { <-0.5, 0.65, -0.15>, <-0.5, 0.73, -0.15> 0.03 }
-    cylinder { <-0.5, 0.65, 0.15>, <-0.5, 0.73, 0.15> 0.03 }
-    cylinder { <0.5, 0.65, -0.15>, <0.5, 0.73, -0.15> 0.03 }
-    cylinder { <0.5, 0.65, 0.15>, <0.5, 0.73, 0.15> 0.03 }
-    pigment { color rgb <0.75, 0.75, 0.8> }
-    finish { phong 0.8 reflection 0.2 }
+// ========== ДОПОЛНИТЕЛЬНЫЙ СВЕТ ДЛЯ ПОДСВЕТКИ ==========
+light_source {
+    <0, 2, 1>
+    color rgb <0.4, 0.3, 0.2>
+    shadowless
 }
