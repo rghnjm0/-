@@ -17,11 +17,11 @@ global_settings {
   ambient_light rgb<0.03, 0.01, 0.01>
 }
 
-// Пол с отражениями
+// ПОЛ - только одна плоскость (сине-белый с отражениями)
 plane { y, -10
     pigment { checker White, Blue scale 3 }
     finish {
-        reflection 0.3  // Добавляем отражение для бликов от источников света
+        reflection 0.3
         specular 0.5
         roughness 0.05
     }
@@ -40,12 +40,10 @@ plane { x,-25
 } 
  
 plane { y, 30 
-   pigment { checker Grey,Black scale 3 }
+   pigment { checker Grey, Black scale 3 }
 }
 
-plane{ y,-10
-   pigment { checker Grey,Black scale 3 }
-} 
+// Вторая плоскость пола УДАЛЕНА, чтобы свет соединялся
 
 box { <0, 0, 0>, < 10, 1, 16> 
    pigment { wood }             
@@ -71,7 +69,6 @@ sphere { <4,2,7>, 1
    texture { pigment { color White }
      finish {           
        reflection 1     
-                    
      }
    }
 } 
@@ -81,10 +78,8 @@ cylinder { <4, 1, 3>,
               0.5
     texture { pigment 
             { color Green filter 0.8}
-                          
              finish {
                 diffuse 1 
-                          
              }            
    }                      
  }  
@@ -101,173 +96,52 @@ box { <-10, 4, 30>, <20, 12, 29.95>
   }
 }
 
-box {
-   <-25, 0, -20>,
-   <-24.9, 20, -22>
-   pigment { color White }
-   finish {
-      specular 0.7
-      roughness 0.05
-      emission 0.3
-   }
-}
+// Светящиеся колонны
+box { <-25, 0, -20>, <-24.9, 20, -22> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
+box { <-25, 0, -40>, <-24.9, 20, -42> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
+box { <-25, 0, -60>, <-24.9, 20, -62> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
+box { <-25, 0, -80>, <-24.9, 20, -82> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
 
-box {
-   <-25, 0, -40>,
-   <-24.9, 20, -42>
-   pigment { color White }
-   finish {
-      specular 0.7
-      roughness 0.05
-      emission 0.3
-   }
-}
+box { <15, 0, -20>, <14.9, 20, -22> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
+box { <15, 0, -40>, <14.9, 20, -42> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
+box { <15, 0, -60>, <14.9, 20, -62> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
+box { <15, 0, -80>, <14.9, 20, -82> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
 
-box {
-   <-25, 0, -60>,
-   <-24.9, 20, -62>
-   pigment { color White }
-   finish {
-      specular 0.7
-      roughness 0.05
-      emission 0.3
-   }
-}
+// Верхние тёплые светильники
+light_source { <-5, 29, -2>  color rgb<1, 0.88, 0.65> fade_distance 6 fade_power 40 }
+light_source { <-5, 29, -25> color rgb<1, 0.88, 0.65> fade_distance 6 fade_power 40 }
+light_source { <-5, 29, -50> color rgb<1, 0.88, 0.65> fade_distance 6 fade_power 40 }
 
-box {
-   <-25, 0, -80>,
-   <-24.9, 20, -82>
-   pigment { color White }
-   finish {
-      specular 0.7
-      roughness 0.05
-      emission 0.3
-   }
-}
+// Левые стены - нижний ряд
+light_source { <-24, 5, -20>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <-24, 5, -40>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <-24, 5, -60>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <-24, 5, -80>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
 
-box {
-   <15, 0, -20>,
-   <14.9, 20, -22>
-   pigment { color White }
-   finish {
-      specular 0.7
-      roughness 0.05
-      emission 0.3
-   }
-}
+// Правые стены - нижний ряд
+light_source { <14, 5, -20>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <14, 5, -40>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <14, 5, -60>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <14, 5, -80>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
 
-box {
-   <15, 0, -40>,
-   <14.9, 20, -42>
-   pigment { color White }
-   finish {
-      specular 0.7
-      roughness 0.05
-      emission 0.3
-   }
-}
+// Левые стены - верхний ряд
+light_source { <-24, 15, -20> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <-24, 15, -40> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <-24, 15, -60> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <-24, 15, -80> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
 
-box {
-   <15, 0, -60>,
-   <14.9, 20, -62>
-   pigment { color White }
-   finish {
-      specular 0.7
-      roughness 0.05
-      emission 0.3
-   }
-}
+// Правые стены - верхний ряд
+light_source { <14, 15, -20> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <14, 15, -40> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <14, 15, -60> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+light_source { <14, 15, -80> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
 
-box {
-   <15, 0, -80>,
-   <14.9, 20, -82>
-   pigment { color White }
-   finish {
-      specular 0.7
-      roughness 0.05
-      emission 0.3
-   }
-} 
-
-// Верхние тёплые светильники (уменьшен радиус)
-light_source {
-  <-5, 29, -2>
-  color rgb <1, 0.88, 0.65>
-  fade_distance 6
-  fade_power 40
-}
-
-light_source {
-  <-5, 29, -25>
-  color rgb <1, 0.88, 0.65>
-  fade_distance 6
-  fade_power 40
-} 
-
-light_source {
-  <-5, 29, -50>
-  color rgb <1, 0.88, 0.65>
-  fade_distance 6
-  fade_power 40
-}
-
-// Левые стены - нижний ряд (уменьшен радиус)
-light_source { <-24, 5, -20>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <-24, 5, -40>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <-24, 5, -60>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <-24, 5, -80>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-
-// Правые стены - нижний ряд (уменьшен радиус)
-light_source { <14, 5, -20>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <14, 5, -40>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <14, 5, -60>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <14, 5, -80>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }  
-  
-// Левые стены - верхний ряд (уменьшен радиус)
-light_source { <-24, 15, -20>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <-24, 15, -40>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <-24, 15, -60>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <-24, 15, -80>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-
-// Правые стены - верхний ряд (уменьшен радиус)
-light_source { <14, 15, -20>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <14, 15, -40>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <14, 15, -60>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 }
-light_source { <14, 15, -80>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 5  fade_power 30 } 
-  
-// Нижние акцентные светильники (самый маленький радиус)
-light_source { <-12, -9, -70>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 4  fade_power 25 } 
-light_source { <3.5, -9, -70>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 4  fade_power 25 } 
-  
-light_source { <-12, -9, -50>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 4  fade_power 25 } 
-light_source { <3.5, -9, -50>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 4  fade_power 25 }    
-  
-light_source { <-12, -9, -30>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 4  fade_power 25 } 
-light_source { <3.5, -9, -30>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 4  fade_power 25 }
-  
-light_source { <-12, -9, -10>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 4  fade_power 25 } 
-light_source { <3.5, -9, -10>  color rgb<0.8, 0.55, 0.2> * 1.2
-  fade_distance 4  fade_power 25 }
+// Нижние акцентные светильники
+light_source { <-12, -9, -70> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
+light_source { <3.5, -9, -70> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
+light_source { <-12, -9, -50> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
+light_source { <3.5, -9, -50> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
+light_source { <-12, -9, -30> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
+light_source { <3.5, -9, -30> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
+light_source { <-12, -9, -10> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
+light_source { <3.5, -9, -10> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
