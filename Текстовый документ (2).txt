@@ -82,71 +82,71 @@ box { <-8.5, -1, 5>,
       }                          
  }   
 
-// ========== ЗАКЛЁПКИ НА СПИНКЕ (2 штуки, ВНУТРИ) ==========
-// Делаем углубления под заклёпки
-difference {
-   box { <-8.5, -1, 10>, <-8.3, 2, 10.05> }
-   
-   // Углубления для заклёпок
-   cylinder { <-8.4, 1.2, 10>, <-8.4, 1.2, 10.2>, 0.15 }
-   cylinder { <-8.4, 0.2, 10>, <-8.4, 0.2, 10.2>, 0.15 }
-   
-   texture { pigment { wood } }
-}
-
-// Круглые пластины-заклёпки (утопленные)
-// Верхняя заклёпка
+// ========== ЗАКЛЁПКИ НА СПИНКЕ (2 цилиндра ВНУТРИ) ==========
+// Верхняя заклёпка (цилиндр, утопленный в спинку)
 cylinder { 
-   <-8.4, 1.2, 9.98>, 
-   <-8.4, 1.2, 10.08>, 
-   0.13
+   <-8.4, 1.2, 9.95>, 
+   <-8.4, 1.2, 10.15>, 
+   0.1
    texture { 
-      pigment { color rgb <0.85, 0.65, 0.2> } 
-      finish { specular 0.7 roughness 0.01 }
+      pigment { color rgb <0.8, 0.6, 0.15> } 
+      finish { specular 0.6 roughness 0.02 }
    }
 }
 
-// Нижняя заклёпка
+// Нижняя заклёпка (цилиндр, утопленный в спинку)
 cylinder { 
-   <-8.4, 0.2, 9.98>, 
-   <-8.4, 0.2, 10.08>, 
-   0.13
+   <-8.4, 0.2, 9.95>, 
+   <-8.4, 0.2, 10.15>, 
+   0.1
    texture { 
-      pigment { color rgb <0.85, 0.65, 0.2> } 
-      finish { specular 0.7 roughness 0.01 }
+      pigment { color rgb <0.8, 0.6, 0.15> } 
+      finish { specular 0.6 roughness 0.02 }
    }
 }
 
-// Бортики заклёпок (тонкий ободок)
-torus { 0.13, 0.02 rotate x*90 translate <-8.4, 1.2, 10.03> texture { pigment { color rgb <0.7, 0.55, 0.15> } } }
-torus { 0.13, 0.02 rotate x*90 translate <-8.4, 0.2, 10.03> texture { pigment { color rgb <0.7, 0.55, 0.15> } } }
-
-// ========== ЗАКЛЁПКИ НА СИДЕНЬЕ (4 штуки) ==========
-// Круглые пластины на сиденье
-#macro RivetOnSeat(x, z)
-   union {
-      // Основная пластина
-      cylinder { 
-         <x, -3.72, z>, 
-         <x, -3.68, z>, 
-         0.12
-         texture { 
-            pigment { color rgb <0.85, 0.65, 0.2> } 
-            finish { specular 0.7 roughness 0.01 }
-         }
-      }
-      // Ободок
-      torus { 0.12, 0.015 rotate x*90 translate <x, -3.69, z> texture { pigment { color rgb <0.7, 0.55, 0.15> } } }
-      // Центральная точка
-      sphere { <x, -3.69, z>, 0.05 texture { pigment { color rgb <0.9, 0.75, 0.3> } finish { specular 0.8 } } }
+// ========== ЗАКЛЁПКИ НА СИДЕНЬЕ (4 цилиндра ВНУТРИ) ==========
+// Передние заклёпки (цилиндры уходят вниз в сиденье)
+cylinder { 
+   <-7.5, -3.95, 5.2>, 
+   <-7.5, -3.75, 5.2>, 
+   0.09
+   texture { 
+      pigment { color rgb <0.8, 0.6, 0.15> } 
+      finish { specular 0.6 roughness 0.02 }
    }
-#end
+}
 
-// 4 заклёпки на сиденье
-RivetOnSeat(-7.8, 5.2)
-RivetOnSeat(-5.2, 5.2)
-RivetOnSeat(-7.8, 9.7)
-RivetOnSeat(-5.2, 9.7)
+cylinder { 
+   <-5.5, -3.95, 5.2>, 
+   <-5.5, -3.75, 5.2>, 
+   0.09
+   texture { 
+      pigment { color rgb <0.8, 0.6, 0.15> } 
+      finish { specular 0.6 roughness 0.02 }
+   }
+}
+
+// Задние заклёпки
+cylinder { 
+   <-7.5, -3.95, 9.7>, 
+   <-7.5, -3.75, 9.7>, 
+   0.09
+   texture { 
+      pigment { color rgb <0.8, 0.6, 0.15> } 
+      finish { specular 0.6 roughness 0.02 }
+   }
+}
+
+cylinder { 
+   <-5.5, -3.95, 9.7>, 
+   <-5.5, -3.75, 9.7>, 
+   0.09
+   texture { 
+      pigment { color rgb <0.8, 0.6, 0.15> } 
+      finish { specular 0.6 roughness 0.02 }
+   }
+}
 
 // ========== ОСТАЛЬНЫЕ ДЕТАЛИ ==========
  
