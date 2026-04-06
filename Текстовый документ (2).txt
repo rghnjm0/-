@@ -1,123 +1,116 @@
-#include "colors.inc"
-#include "textures.inc"
-
+// Школьный стул с 2 ножками и поперечными перекладинами
+// Камера для хорошего обзора
 camera {
-  location <-3, 5, -8>
-  look_at <0, 2, 0>
+    location <2, 1.5, -3>
+    look_at <0, 0.5, 0>
+    angle 60
 }
 
-global_settings {
-  ambient_light rgb<0.15, 0.12, 0.1>
-}
-
-// Пол
-plane { y, -0.5
-  pigment { checker Gray, LightGray scale 1.5 }
-  finish {
-    reflection 0.15
-    specular 0.3
-    roughness 0.1
-  }
-}
-
-// Основной свет
+// Источники света
 light_source {
-  <4, 10, -5>
-  color White
-  shadowless
+    <5, 10, -5>
+    color rgb <1, 1, 1>
 }
 
-// Заполняющий свет
 light_source {
-  <-3, 5, -4>
-  color rgb<0.7, 0.75, 0.85>
-  fade_distance 10
-  fade_power 2
+    <-3, 5, -2>
+    color rgb <0.7, 0.7, 0.7>
 }
 
-// Свет сзади
-light_source {
-  <0, 4, 6>
-  color Gray * 0.5
-  fade_distance 8
-  fade_power 2
+// Фон
+background {
+    color rgb <0.9, 0.9, 0.95>
 }
 
-// ============================================
-// ШКОЛЬНЫЙ СТУЛ С ДВУМЯ НОЖКАМИ
-// ============================================
+// Пол (для тени)
+plane {
+    y, -0.1
+    pigment { color rgb <0.85, 0.8, 0.75> }
+}
 
-#declare WoodColor = rgb<0.6, 0.4, 0.22>;
-#declare LightWood = rgb<0.7, 0.5, 0.3>;
-
-#declare LegRadius = 0.12;
-#declare LegHeight = 1.8;
-#declare SeatHeight = 0.48;
-#declare SeatThick = 0.1;
-
-// ===== ДВЕ НОЖКИ (широкие, как лыжи) =====
-
-// Левая ножка (цельная, от пола до сиденья)
+// ========== НОЖКИ СТУЛА ==========
+// Левая ножка
 box {
-  <-0.65, -0.5, -0.55>,
-  <-0.45, SeatHeight - 0.05, 0.55>
-  pigment { WoodColor }
-  finish { specular 0.3 roughness 0.1 }
+    <-0.4, -0.05, -0.3>, <-0.3, 0.55, 0.3>
+    pigment { color rgb <0.6, 0.4, 0.2> }  // Древесный цвет
+    finish { phong 0.5 }
 }
 
 // Правая ножка
 box {
-  <0.45, -0.5, -0.55>,
-  <0.65, SeatHeight - 0.05, 0.55>
-  pigment { WoodColor }
-  finish { specular 0.3 roughness 0.1 }
+    <0.3, -0.05, -0.3>, <0.4, 0.55, 0.3>
+    pigment { color rgb <0.6, 0.4, 0.2> }
+    finish { phong 0.5 }
 }
 
-// ===== ПОПЕРЕЧНАЯ ПЕРЕКЛАДИНА (между ножками) =====
+// ========== ПОПЕРЕЧНЫЕ ПЕРЕКЛАДИНЫ СНИЗУ ==========
+// Передняя поперечная перекладина (связывает ножки спереди)
 box {
-  <-0.45, -0.2, -0.5>,
-  <0.45, -0.05, 0.5>
-  pigment { LightWood }
-  finish { specular 0.25 roughness 0.12 }
+    <-0.4, -0.05, -0.35>, <0.4, 0, -0.25>
+    pigment { color rgb <0.55, 0.35, 0.15> }
+    finish { phong 0.5 }
 }
 
-// ===== СИДЕНЬЕ =====
+// Задняя поперечная перекладина (связывает ножки сзади)
 box {
-  <-0.7, SeatHeight - 0.08, -0.65>,
-  <0.7, SeatHeight, 0.65>
-  pigment { LightWood }
-  finish { specular 0.4 roughness 0.08 }
+    <-0.4, -0.05, 0.25>, <0.4, 0, 0.35>
+    pigment { color rgb <0.55, 0.35, 0.15> }
+    finish { phong 0.5 }
 }
 
-// ===== СПИНКА (широкая, крепится к задней части сиденья) =====
+// Левая поперечная перекладина (сбоку, для устойчивости)
 box {
-  <-0.65, SeatHeight, -0.55>,
-  <0.65, LegHeight - 0.2, -0.4>
-  pigment { WoodColor }
-  finish { specular 0.35 roughness 0.09 }
+    <-0.45, -0.05, -0.3>, <-0.35, 0, 0.3>
+    pigment { color rgb <0.55, 0.35, 0.15> }
+    finish { phong 0.5 }
 }
 
-// ===== ВЕРХНЯЯ ПЛАНКА СПИНКИ =====
+// Правая поперечная перекладина (сбоку, для устойчивости)
 box {
-  <-0.68, LegHeight - 0.15, -0.54>,
-  <0.68, LegHeight - 0.02, -0.41>
-  pigment { WoodColor }
-  finish { specular 0.35 roughness 0.09 }
+    <0.35, -0.05, -0.3>, <0.45, 0, 0.3>
+    pigment { color rgb <0.55, 0.35, 0.15> }
+    finish { phong 0.5 }
 }
 
-// ===== НОЖКИ-ЗАГЛУШКИ (резиновые наконечники) =====
-#declare TipColor = rgb<0.2, 0.2, 0.2>;
-
+// Центральная поперечная перекладина (для дополнительной прочности)
 box {
-  <-0.66, -0.52, -0.56>,
-  <-0.44, -0.48, 0.56>
-  pigment { TipColor }
-  finish { specular 0.1 roughness 0.3 }
+    <-0.35, -0.03, -0.28>, <0.35, 0.02, 0.28>
+    pigment { color rgb <0.55, 0.35, 0.15> }
+    finish { phong 0.5 }
+}
+
+// ========== СИДЕНЬЕ ==========
+box {
+    <-0.5, 0.55, -0.4>, <0.5, 0.65, 0.4>
+    pigment { color rgb <0.65, 0.45, 0.25> }
+    finish { phong 0.6 }
+}
+
+// ========== СПИНКА ==========
+box {
+    <-0.45, 0.55, 0.35>, <0.45, 1.1, 0.45>
+    pigment { color rgb <0.65, 0.45, 0.25> }
+    finish { phong 0.6 }
+}
+
+// ========== ДОПОЛНИТЕЛЬНЫЕ ЭЛЕМЕНТЫ ДЛЯ РЕАЛИСТИЧНОСТИ ==========
+// Закругление углов сиденья (небольшие скосы)
+box {
+    <-0.48, 0.65, -0.38>, <-0.42, 0.67, 0.38>
+    pigment { color rgb <0.6, 0.4, 0.2> }
 }
 
 box {
-  <0.44, -0.52, -0.56>,
-  <0.66, -0.48, 0.56>
-  pigment { TipColor }
-  finish { specular 0.1 roughness 0.3 }
+    <0.42, 0.65, -0.38>, <0.48, 0.67, 0.38>
+    pigment { color rgb <0.6, 0.4, 0.2> }
+}
+
+// Текст на спинке (имитация)
+text {
+    ttf "arial.ttf" "SCHOOL" 0.05, 0
+    scale 0.15
+    rotate <0, 0, 0>
+    translate <-0.2, 0.85, 0.46>
+    pigment { color rgb <0.3, 0.2, 0.1> }
+    finish { phong 0.3 }
 }
