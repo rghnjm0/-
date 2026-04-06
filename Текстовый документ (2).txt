@@ -8,8 +8,8 @@ camera {
       
 light_source { <-3, 10, -3> White shadowless }
 
- background{NeonBlue}
- 
+background{NeonBlue}
+
 plane{ y,-10
    pigment {granite } 
  }   
@@ -21,14 +21,14 @@ box { <-8.5, -3.8, 5>,
       }                          
  }
 
- box { <-9, -10, 5>,                 
+box { <-9, -10, 5>,                 
       < -8.5, 1.4, 5.5>               
       texture {                  
          pigment { color Gray } 
       }                          
  }                                 
    
- box { <-9, -10, 10>,                
+box { <-9, -10, 10>,                
       < -8.5, 1.4, 9.5>            
       texture {                  
          pigment { color Gray }
@@ -75,21 +75,52 @@ box { <-8.5, -4, 5>,
  }
 
 
- box { <-8.5, -1, 5>,            
+box { <-8.5, -1, 5>,            
       < -8.3, 2, 10>            
       texture {                  
          pigment { wood }  
       }                          
  }   
 
+// ========== ЗАКЛЁПКИ НА СПИНКЕ (2 штуки) ==========
+// Верхняя заклёпка
+cylinder { 
+   <-8.4, 1.2, 10.05>, 
+   <-8.4, 1.2, 9.95>, 
+   0.08
+   texture { pigment { color Gold } finish { specular 0.8 } }
+}
 
+// Нижняя заклёпка
+cylinder { 
+   <-8.4, 0.2, 10.05>, 
+   <-8.4, 0.2, 9.95>, 
+   0.08
+   texture { pigment { color Gold } finish { specular 0.8 } }
+}
 
+// Шляпки заклёпок (полусферы)
+sphere { <-8.4, 1.2, 10.05>, 0.1 texture { pigment { color Gold } finish { specular 0.9 } } }
+sphere { <-8.4, 0.2, 10.05>, 0.1 texture { pigment { color Gold } finish { specular 0.9 } } }
 
+// ========== ЗАКЛЁПКИ НА СИДЕНЬЕ (4 штуки) ==========
+// Передние заклёпки
+cylinder { <-7.5, -3.75, 5.05>, <-7.5, -3.75, 4.95>, 0.1 texture { pigment { color Gold } finish { specular 0.8 } } }
+cylinder { <-5.5, -3.75, 5.05>, <-5.5, -3.75, 4.95>, 0.1 texture { pigment { color Gold } finish { specular 0.8 } } }
 
+// Задние заклёпки
+cylinder { <-7.5, -3.75, 9.95>, <-7.5, -3.75, 9.85>, 0.1 texture { pigment { color Gold } finish { specular 0.8 } } }
+cylinder { <-5.5, -3.75, 9.95>, <-5.5, -3.75, 9.85>, 0.1 texture { pigment { color Gold } finish { specular 0.8 } } }
+
+// Шляпки заклёпок на сиденье
+sphere { <-7.5, -3.7, 5>, 0.12 texture { pigment { color Gold } finish { specular 0.9 } } }
+sphere { <-5.5, -3.7, 5>, 0.12 texture { pigment { color Gold } finish { specular 0.9 } } }
+sphere { <-7.5, -3.7, 9.9>, 0.12 texture { pigment { color Gold } finish { specular 0.9 } } }
+sphere { <-5.5, -3.7, 9.9>, 0.12 texture { pigment { color Gold } finish { specular 0.9 } } }
+
+// ========== ОСТАЛЬНЫЕ ДЕТАЛИ (ножки и т.д.) ==========
  
- 
- 
- box { <-10.7, -10, 10>,                
+box { <-10.7, -10, 10>,                
       < -11.2, -9.5, 9.5>               
       texture {                  
          pigment { color Black }
@@ -117,7 +148,7 @@ box { <-3.3, -10, 5>,
       }                          
  }  
  
- box { <-5, -4, 10>,                
+box { <-5, -4, 10>,                
       <-4.9, -4.5, 9.5>               
       texture {                  
          pigment { color Black } 
