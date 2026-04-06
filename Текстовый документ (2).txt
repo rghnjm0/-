@@ -1,184 +1,146 @@
-// Ученический стул для POV-Ray
-// Компиляция: povray +W800 +H600 +A0.3 +Q9 chair.pov
-
-#version 3.7;
-
 #include "colors.inc"
-#include "textures.inc"
+#include "textures.inc" 
 
-global_settings {
-    ambient_light rgb <0.3, 0.3, 0.3>
-    assumed_gamma 1.0
-}
+camera { 
+   location <15, 10, 25>  
+   look_at <-9, -8, 1>  
+ }
+      
+light_source { <-3, 10, -3> White shadowless }
 
-// Камера
-camera {
-    perspective
-    location <2, 1.5, -2>
-    look_at <0, 0.6, 0>
-    angle 45
-}
+ background{NeonBlue}
+ 
+plane{ y,-10
+   pigment {granite } 
+ }   
+ 
+box { <-8.5, -3.8, 5>,               
+      < -4, -4, 10>               
+      texture {                  
+         pigment { wood }
+      }                          
+ }
 
-// Источники света
-light_source {
-    <3, 5, -2>
-    color White
-    shadowless
-}
+ box { <-9, -10, 5>,                 
+      < -8.5, 1.4, 5.5>               
+      texture {                  
+         pigment { color Gray } 
+      }                          
+ }                                 
+   
+ box { <-9, -10, 10>,                
+      < -8.5, 1.4, 9.5>            
+      texture {                  
+         pigment { color Gray }
+      }                          
+ }
+  
+   
+box { <-3.8, -10, 10>,                
+      < -10.7, -9.5, 9.5>               
+      texture {                  
+         pigment { color Gray }
+      }                          
+ }  
+ 
+box { <-3.8, -10, 5>,                
+      <-10.7, -9.5, 5.5>               
+      texture {                  
+         pigment { color Gray }
+      }                          
+ }
+ 
+  
 
-light_source {
-    <-2, 4, 3>
-    color White
-}
+box { <-9, -10, 5>,                 
+      <-8.5, -9.5, 10>               
+      texture {                  
+         pigment { color Gray }  
+      }                          
+ } 
 
-light_source {
-    <0, 3, -4>
-    color rgb <0.8, 0.8, 0.9>
-}
+// Iia neaaieai 
+box { <-8.5, -4, 10>,                
+      <-5, -4.5, 9.5>               
+      texture {                  
+         pigment { color Gray } 
+      }                          
+ }  
+ 
+box { <-8.5, -4, 5>,              
+      <-5, -4.5, 5.5>               
+      texture {                  
+         pigment { color Gray } 
+      }                          
+ }
 
-// Пол (небольшая тень)
-plane {
-    y, -0.05
-    pigment { color rgb <0.85, 0.85, 0.9> }
-    finish { ambient 0.2 diffuse 0.8 }
-}
 
-// ========== ОСНОВНЫЕ ПАРАМЕТРЫ ==========
-#declare SeatWidth   = 0.45;   // ширина сиденья
-#declare SeatDepth   = 0.42;   // глубина сиденья
-#declare SeatHeight  = 0.05;   // толщина сиденья
-#declare LegHeight   = 0.48;   // высота ножек
-#declare LegThick    = 0.035;  // толщина ножек
-#declare BackHeight  = 0.40;   // высота спинки
-#declare BackThick   = 0.03;   // толщина спинки
+ box { <-8.5, -1, 5>,            
+      < -8.3, 2, 10>            
+      texture {                  
+         pigment { wood }  
+      }                          
+ }   
 
-// ========== ТЕКСТУРЫ ==========
-#declare WoodTexture = texture {
-    pigment { color rgb <0.7, 0.45, 0.25> }
-    finish { specular 0.3 roughness 0.05 }
-    normal { bumps 0.3 scale 0.02 }
-}
 
-#declare MetalTexture = texture {
-    pigment { color Gray50 }
-    finish { specular 0.7 roughness 0.01 metallic }
-}
 
-#declare SeatTexture = texture {
-    pigment { color rgb <0.65, 0.4, 0.22> }
-    finish { specular 0.2 roughness 0.1 }
-    normal { wood 0.5 scale 0.03 }
-}
 
-// ========== НОЖКИ (4 штуки) ==========
-#macro Leg(x, z)
-    box {
-        < -LegThick/2, 0, -LegThick/2 >,
-        <  LegThick/2, LegHeight, LegThick/2 >
-        texture { MetalTexture }
-        translate < x, -0.05, z >
-    }
-#end
 
-// ========== ПЕРЕМЫЧКИ МЕЖДУ НОЖКАМИ ==========
-#macro Stretcher(x1, z1, x2, z2, yLevel)
-    #local dx = x2 - x1;
-    #local dz = z2 - z1;
-    #local len = sqrt(dx*dx + dz*dz);
-    #local ang = degrees(atan2(dz, dx));
-    
-    box {
-        < -LegThick/2, -LegThick/2, -LegThick/2 >,
-        <  len + LegThick/2, LegThick/2, LegThick/2 >
-        texture { MetalTexture }
-        rotate y*ang
-        translate < x1, yLevel, z1 >
-    }
-#end
-
-// ========== СИДЕНЬЕ ==========
-#macro Seat()
-    box {
-        < -SeatWidth/2, 0, -SeatDepth/2 >,
-        <  SeatWidth/2, SeatHeight, SeatDepth/2 >
-        texture { SeatTexture }
-    }
-#end
-
-// ========== СПИНКА ==========
-#macro Backrest()
-    // Основная часть спинки
-    box {
-        < -SeatWidth/2 + 0.03, 0, -BackThick/2 >,
-        <  SeatWidth/2 - 0.03, BackHeight, BackThick/2 >
-        texture { WoodTexture }
-    }
-    
-    // Верхняя планка (скругление)
-    box {
-        < -SeatWidth/2 + 0.01, BackHeight - 0.02, -BackThick/2 - 0.005 >,
-        <  SeatWidth/2 - 0.01, BackHeight + 0.02, BackThick/2 + 0.005 >
-        texture { WoodTexture }
-    }
-#end
-
-// ========== ПОСТРОЕНИЕ СТУЛА ==========
-union {
-    // Ножки
-    Leg( SeatWidth/2 - LegThick,  SeatDepth/2 - LegThick )
-    Leg( SeatWidth/2 - LegThick, -SeatDepth/2 + LegThick )
-    Leg(-SeatWidth/2 + LegThick,  SeatDepth/2 - LegThick )
-    Leg(-SeatWidth/2 + LegThick, -SeatDepth/2 + LegThick )
-    
-    // Перемычки (царги)
-    Stretcher( SeatWidth/2 - LegThick,  SeatDepth/2 - LegThick,
-              -SeatWidth/2 + LegThick,  SeatDepth/2 - LegThick, LegHeight*0.6 )
-    Stretcher( SeatWidth/2 - LegThick, -SeatDepth/2 + LegThick,
-              -SeatWidth/2 + LegThick, -SeatDepth/2 + LegThick, LegHeight*0.6 )
-    Stretcher( SeatWidth/2 - LegThick,  SeatDepth/2 - LegThick,
-               SeatWidth/2 - LegThick, -SeatDepth/2 + LegThick, LegHeight*0.6 )
-    Stretcher(-SeatWidth/2 + LegThick,  SeatDepth/2 - LegThick,
-              -SeatWidth/2 + LegThick, -SeatDepth/2 + LegThick, LegHeight*0.6 )
-    
-    // Сиденье
-    object { Seat() translate y*LegHeight }
-    
-    // Спинка
-    object { Backrest() 
-             translate <0, LegHeight + SeatHeight, -SeatDepth/2 + BackThick/2> }
-    
-    // Боковые опоры спинки (соединение со спинкой)
-    #declare SideSupportHeight = 0.25;
-    box {
-        < SeatWidth/2 - 0.05, LegHeight + SeatHeight, -SeatDepth/2 + 0.02 >,
-        < SeatWidth/2 - 0.02, LegHeight + SeatHeight + SideSupportHeight, -SeatDepth/2 + 0.07 >
-        texture { WoodTexture }
-    }
-    box {
-        < -SeatWidth/2 + 0.02, LegHeight + SeatHeight, -SeatDepth/2 + 0.02 >,
-        < -SeatWidth/2 + 0.05, LegHeight + SeatHeight + SideSupportHeight, -SeatDepth/2 + 0.07 >
-        texture { WoodTexture }
-    }
-    
-    // Декоративные заглушки на ножках
-    #declare CapSize = LegThick + 0.008;
-    #macro Cap(x, z)
-        sphere {
-            <0,0,0>, CapSize/2
-            texture { MetalTexture }
-            translate < x, LegHeight - 0.01, z >
-        }
-    #end
-    
-    Cap( SeatWidth/2 - LegThick,  SeatDepth/2 - LegThick )
-    Cap( SeatWidth/2 - LegThick, -SeatDepth/2 + LegThick )
-    Cap(-SeatWidth/2 + LegThick,  SeatDepth/2 - LegThick )
-    Cap(-SeatWidth/2 + LegThick, -SeatDepth/2 + LegThick )
-}
-
-// ========== ДОПОЛНИТЕЛЬНЫЙ СВЕТ ДЛЯ ПОДСВЕТКИ ==========
-light_source {
-    <0, 2, 1>
-    color rgb <0.4, 0.3, 0.2>
-    shadowless
-}
+ 
+ 
+ 
+ box { <-10.7, -10, 10>,                
+      < -11.2, -9.5, 9.5>               
+      texture {                  
+         pigment { color Black }
+      }                          
+ }  
+ 
+box { <-10.7, -10, 5>,                
+      <-11.2, -9.5, 5.5>            
+      texture {                  
+         pigment { color Black }
+      }                          
+ } 
+ 
+box { <-3.3, -10, 10>,               
+      < -3.8, -9.5, 9.5>               
+      texture {                  
+         pigment { color Black } 
+      }                          
+ } 
+ 
+box { <-3.3, -10, 5>,              
+      <-3.8, -9.5, 5.5>               
+      texture {                  
+         pigment { color Black }  
+      }                          
+ }  
+ 
+ box { <-5, -4, 10>,                
+      <-4.9, -4.5, 9.5>               
+      texture {                  
+         pigment { color Black } 
+      }                          
+ }  
+ 
+box { <-5, -4, 5>,               
+      <-4.9, -4.5, 5.5>               
+      texture {                  
+         pigment { color Black } 
+      }                          
+ } 
+ 
+box { <-9, 1.4, 5>,               
+      < -8.5, 1.5, 5.5>               
+      texture {                  
+         pigment { color Black }  
+      }                          
+ } 
+ 
+box { <-9, 1.4, 10>,               
+      < -8.5, 1.5, 9.5>               
+      texture {                  
+         pigment { color Black }
+      }                          
+ }
