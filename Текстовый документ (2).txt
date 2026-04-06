@@ -2,146 +2,163 @@
 #include "textures.inc"
 
 camera {
-location <-5, 6,-115>
-look_at <-2, 4, 4>
-}                          
-
-// Главный источник света (очень слабый, только чтобы видеть общий контур)
-light_source {
-    <-100, 100, -100>
-    color Black
-    shadowless
+  location <-3, 5, -8>
+  look_at <0, 2, 0>
 }
 
 global_settings {
-  ambient_light rgb<0.03, 0.01, 0.01>
+  ambient_light rgb<0.1, 0.1, 0.1>
 }
 
-// ПОЛ - только одна плоскость (сине-белый с отражениями)
-plane { y, -10
-    pigment { checker White, Blue scale 3 }
-    finish {
-        reflection 0.3
-        specular 0.5
-        roughness 0.05
-    }
-}
-
-plane { z, 30 
-   pigment { brick }
-}
-
-plane { x, 15
-   pigment { brick }
-}
-
-plane { x,-25
-   pigment { brick }
-} 
- 
-plane { y, 30 
-   pigment { checker Grey, Black scale 3 }
-}
-
-// Вторая плоскость пола УДАЛЕНА, чтобы свет соединялся
-
-box { <0, 0, 0>, < 10, 1, 16> 
-   pigment { wood }             
-}
-
-box { <9, -10, 0>, < 10, 0, 1> 
-   pigment { wood }
-}
-
-box { <0, -10, 0>, < 1, 0, 1>
-   pigment { wood }
-}
-
-box { <0, -10, 15>, < 1, 0, 16>
-   pigment { wood }
-}
-
-box { < 9, -10, 15>, <10, 0, 16>
-   pigment { wood }
-}  
- 
-sphere { <4,2,7>, 1
-   texture { pigment { color White }
-     finish {           
-       reflection 1     
-     }
-   }
-} 
-  
-cylinder { <4, 1, 3>,
-              <4, 3, 3 >, 
-              0.5
-    texture { pigment 
-            { color Green filter 0.8}
-             finish {
-                diffuse 1 
-             }            
-   }                      
- }  
- 
-box { <-10, 4, 30>, <20, 12, 29.95>
-  texture {
-    pigment { color White }
-    finish {
-      reflection 1      
-      diffuse 0         
-      specular 0        
-      roughness 0      
-    }
+// Пол
+plane { y, -0.5
+  pigment { checker Gray, White scale 1 }
+  finish {
+    reflection 0.2
+    specular 0.3
+    roughness 0.1
   }
 }
 
-// Светящиеся колонны
-box { <-25, 0, -20>, <-24.9, 20, -22> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
-box { <-25, 0, -40>, <-24.9, 20, -42> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
-box { <-25, 0, -60>, <-24.9, 20, -62> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
-box { <-25, 0, -80>, <-24.9, 20, -82> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
+// Основной свет
+light_source {
+  <5, 10, -5>
+  color White
+  shadowless
+}
 
-box { <15, 0, -20>, <14.9, 20, -22> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
-box { <15, 0, -40>, <14.9, 20, -42> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
-box { <15, 0, -60>, <14.9, 20, -62> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
-box { <15, 0, -80>, <14.9, 20, -82> pigment { color White } finish { specular 0.7 roughness 0.05 emission 0.3 } }
+// Заполняющий свет сбоку
+light_source {
+  <-3, 4, -4>
+  color rgb<0.8, 0.8, 0.9>
+  fade_distance 10
+  fade_power 2
+}
 
-// Верхние тёплые светильники
-light_source { <-5, 29, -2>  color rgb<1, 0.88, 0.65> fade_distance 6 fade_power 40 }
-light_source { <-5, 29, -25> color rgb<1, 0.88, 0.65> fade_distance 6 fade_power 40 }
-light_source { <-5, 29, -50> color rgb<1, 0.88, 0.65> fade_distance 6 fade_power 40 }
+// Свет сзади для контура
+light_source {
+  <0, 3, 5>
+  color Gray * 0.5
+  fade_distance 8
+  fade_power 2
+}
 
-// Левые стены - нижний ряд
-light_source { <-24, 5, -20>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <-24, 5, -40>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <-24, 5, -60>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <-24, 5, -80>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+// ============================================
+// ШКОЛЬНЫЙ СТУЛ
+// ============================================
 
-// Правые стены - нижний ряд
-light_source { <14, 5, -20>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <14, 5, -40>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <14, 5, -60>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <14, 5, -80>  color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+// НОЖКИ (4 штуки)
+#declare LegRadius = 0.08;
+#declare LegHeight = 1.8;
+#declare LegOffset = 0.6;
 
-// Левые стены - верхний ряд
-light_source { <-24, 15, -20> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <-24, 15, -40> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <-24, 15, -60> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <-24, 15, -80> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+// Задняя левая ножка
+cylinder { 
+  <-LegOffset, -0.5, -LegOffset>, 
+  <-LegOffset, LegHeight - 0.5, -LegOffset>, 
+  LegRadius
+  pigment { Brown }
+  finish { specular 0.3 roughness 0.1 }
+}
 
-// Правые стены - верхний ряд
-light_source { <14, 15, -20> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <14, 15, -40> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <14, 15, -60> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
-light_source { <14, 15, -80> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 5 fade_power 30 }
+// Задняя правая ножка
+cylinder { 
+  <LegOffset, -0.5, -LegOffset>, 
+  <LegOffset, LegHeight - 0.5, -LegOffset>, 
+  LegRadius
+  pigment { Brown }
+  finish { specular 0.3 roughness 0.1 }
+}
 
-// Нижние акцентные светильники
-light_source { <-12, -9, -70> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
-light_source { <3.5, -9, -70> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
-light_source { <-12, -9, -50> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
-light_source { <3.5, -9, -50> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
-light_source { <-12, -9, -30> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
-light_source { <3.5, -9, -30> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
-light_source { <-12, -9, -10> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
-light_source { <3.5, -9, -10> color rgb<0.8, 0.55, 0.2> * 1.2 fade_distance 4 fade_power 25 }
+// Передняя левая ножка
+cylinder { 
+  <-LegOffset, -0.5, LegOffset>, 
+  <-LegOffset, LegHeight - 0.5, LegOffset>, 
+  LegRadius
+  pigment { Brown }
+  finish { specular 0.3 roughness 0.1 }
+}
+
+// Передняя правая ножка
+cylinder { 
+  <LegOffset, -0.5, LegOffset>, 
+  <LegOffset, LegHeight - 0.5, LegOffset>, 
+  LegRadius
+  pigment { Brown }
+  finish { specular 0.3 roughness 0.1 }
+}
+
+// СИДЕНЬЕ
+box {
+  <-0.7, LegHeight - 0.5 - 0.12, -0.7>,
+  <0.7, LegHeight - 0.5, 0.7>
+  pigment { Brown }
+  finish { specular 0.4 roughness 0.1 }
+}
+
+// СПИНКА
+box {
+  <-0.7, LegHeight - 0.5, -0.65>,
+  <0.7, LegHeight + 0.7, -0.5>
+  pigment { Brown }
+  finish { specular 0.4 roughness 0.1 }
+}
+
+// ПОПЕРЕЧНЫЕ ПЕРЕКЛАДИНЫ (между ножками)
+#declare BarRadius = 0.06;
+#declare BarHeight = 0.6;
+
+// Передняя перекладина
+cylinder {
+  <-LegOffset, -0.5 + BarHeight, LegOffset>,
+  <LegOffset, -0.5 + BarHeight, LegOffset>,
+  BarRadius
+  pigment { Brown }
+  finish { specular 0.2 roughness 0.1 }
+}
+
+// Задняя перекладина
+cylinder {
+  <-LegOffset, -0.5 + BarHeight, -LegOffset>,
+  <LegOffset, -0.5 + BarHeight, -LegOffset>,
+  BarRadius
+  pigment { Brown }
+  finish { specular 0.2 roughness 0.1 }
+}
+
+// Левая боковая перекладина
+cylinder {
+  <-LegOffset, -0.5 + BarHeight, -LegOffset>,
+  <-LegOffset, -0.5 + BarHeight, LegOffset>,
+  BarRadius
+  pigment { Brown }
+  finish { specular 0.2 roughness 0.1 }
+}
+
+// Правая боковая перекладина
+cylinder {
+  <LegOffset, -0.5 + BarHeight, -LegOffset>,
+  <LegOffset, -0.5 + BarHeight, LegOffset>,
+  BarRadius
+  pigment { Brown }
+  finish { specular 0.2 roughness 0.1 }
+}
+
+// УКРЕПЛЕНИЕ СПИНКИ (дополнительные планки)
+box {
+  <-0.65, LegHeight + 0.2, -0.64>,
+  <0.65, LegHeight + 0.25, -0.51>
+  pigment { Brown }
+  finish { specular 0.3 roughness 0.1 }
+}
+
+// ЗАКРУГЛЕНИЕ ВЕРХА СПИНКИ (дуга)
+cylinder {
+  <0, LegHeight + 0.7, -0.58>,
+  <0, LegHeight + 0.7, -0.58>,
+  0.68
+  pigment { Brown }
+  finish { specular 0.3 roughness 0.1 }
+  rotate <90, 0, 0>
+  scale <1, 1, 0.12>
+}
