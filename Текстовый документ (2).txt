@@ -1,0 +1,270 @@
+#include "colors.inc"
+#include "textures.inc"
+
+ camera {
+location <-5, 6,-115>
+look_at <-2, 4, 4>
+ }                          
+
+// Ãëàâíûé èñòî÷íèê ñâåòà (î÷åíü ñëàáûé, òîëüêî ÷òîáû âèäåòü îáùèé êîíòóð)
+light_source {
+    <-100, 100, -100>
+    color Black
+    shadowless
+}
+
+global_settings {
+  ambient_light rgb<0.03, 0.01, 0.01>
+}
+
+// Ïîë ñ îòðàæåíèÿìè
+plane { y, -10
+    pigment { checker White, Blue scale 3 }
+    finish {
+        reflection 0.3  // Äîáàâëÿåì îòðàæåíèå äëÿ áëèêîâ îò èñòî÷íèêîâ ñâåòà
+        specular 0.5
+        roughness 0.05
+    }
+}
+
+ plane { z, 30 
+   pigment { brick }
+ }
+
+ plane { x, 15
+   pigment { brick }
+ }
+
+ plane { x,-25
+   pigment { brick }
+ } 
+ 
+ plane { y, 30 
+   pigment { checker Grey,Black scale 3 }
+ }
+
+ plane{ y,-10
+   pigment { checker Grey,Black scale 3 }
+ } 
+
+ box { <0, 0, 0>, < 10, 1, 16> 
+   pigment { wood }             
+ }
+
+ box { <9, -10, 0>, < 10, 0, 1> 
+   pigment { wood }
+ }
+
+ box { <0, -10, 0>, < 1, 0, 1>
+   pigment { wood }
+ }
+
+ box { <0, -10, 15>, < 1, 0, 16>
+   pigment { wood }
+ }
+
+ box { < 9, -10, 15>, <10, 0, 16>
+   pigment { wood }
+ }  
+ 
+  
+ sphere { <4,2,7>, 1
+   texture { pigment { color White }
+     finish {           
+       reflection 1     
+                    
+     }
+   }
+ } 
+  
+ cylinder { <4, 1, 3>,
+              <4, 3, 3 >, 
+              0.5
+    texture { pigment 
+            { color Green filter 0.8}
+                          
+             finish {
+                diffuse 1 
+                          
+             }            
+   }                      
+ }  
+ 
+ box { <-10, 4, 30>, <20, 12, 29.95>
+  texture {
+    pigment { color White }
+    finish {
+      reflection 1      
+      diffuse 0         
+      specular 0        
+      roughness 0      
+    }
+  }
+}
+
+box {
+   <-25, 0, -20>,
+   <-24.9, 20, -22>
+   pigment { color White }
+   finish {
+      specular 0.7
+      roughness 0.05
+      emission 0.3
+   }
+}
+
+box {
+   <-25, 0, -40>,
+   <-24.9, 20, -42>
+   pigment { color White }
+   finish {
+      specular 0.7
+      roughness 0.05
+      emission 0.3
+   }
+}
+
+box {
+   <-25, 0, -60>,
+   <-24.9, 20, -62>
+   pigment { color White }
+   finish {
+      specular 0.7
+      roughness 0.05
+      emission 0.3
+   }
+}
+
+box {
+   <-25, 0, -80>,
+   <-24.9, 20, -82>
+   pigment { color White }
+   finish {
+      specular 0.7
+      roughness 0.05
+      emission 0.3
+   }
+}
+
+box {
+   <15, 0, -20>,
+   <14.9, 20, -22>
+   pigment { color White }
+   finish {
+      specular 0.7
+      roughness 0.05
+      emission 0.3
+   }
+}
+
+box {
+   <15, 0, -40>,
+   <14.9, 20, -42>
+   pigment { color White }
+   finish {
+      specular 0.7
+      roughness 0.05
+      emission 0.3
+   }
+}
+
+box {
+   <15, 0, -60>,
+   <14.9, 20, -62>
+   pigment { color White }
+   finish {
+      specular 0.7
+      roughness 0.05
+      emission 0.3
+   }
+}
+
+box {
+   <15, 0, -80>,
+   <14.9, 20, -82>
+   pigment { color White }
+   finish {
+      specular 0.7
+      roughness 0.05
+      emission 0.3
+   }
+} 
+
+light_source {
+  <-5, 29, -2>
+  color rgb <1, 0.88, 0.65>
+  fade_distance 18
+  fade_power 100
+}
+
+light_source {
+  <-5, 29, -25>
+  color rgb <1, 0.88, 0.65>
+  fade_distance 18
+  fade_power 100
+} 
+
+light_source {
+  <-5, 29, -50>
+  color rgb <1, 0.88, 0.65>
+  fade_distance 18
+  fade_power 100
+}
+
+light_source { <-24, 5, -20>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <-24, 5, -40>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <-24, 5, -60>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <-24, 5, -80>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <14, 5, -20>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <14, 5, -40>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <14, 5, -60>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <14, 5, -80>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }  
+  
+light_source { <-24, 15, -20>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <-24, 15, -40>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <-24, 15, -60>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <-24, 15, -80>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <14, 15, -20>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <14, 15, -40>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <14, 15, -60>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+light_source { <14, 15, -80>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 } 
+  
+ 
+ light_source { <-12, -9, -70>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 } 
+   light_source { <3.5, -9, -70>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 } 
+  
+   light_source { <-12, -9, -50>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 } 
+   light_source { <3.5, -9, -50>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }    
+  
+     light_source { <-12, -9, -30>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 } 
+   light_source { <3.5, -9, -30>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 }
+  
+   light_source { <-12, -9, -10>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 } 
+   light_source { <3.5, -9, -10>  color rgb<0.8, 0.55, 0.2> * 1.2
+  fade_distance 8  fade_power 20 } 
+ 
+                                        
+                                       	
