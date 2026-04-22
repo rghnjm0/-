@@ -1,209 +1,105 @@
 #include "colors.inc"
-#include "textures.inc" 
+#include "golds.inc"
+#include "glass.inc"  // Для красивого стекла (опционально)
 
-camera { 
-   location <15, 10, 25>  
-   look_at <-9, -8, 1>  
- }
-      
-light_source { <-3, 10, -3> White shadowless }
-
-background{NeonBlue}
-
-plane{ y,-10
-   pigment {granite } 
- }   
- 
-box { <-8.5, -3.8, 5>,               
-      < -4, -4, 10>               
-      texture {                  
-         pigment { wood }
-      }                          
- }
-
-box { <-9, -10, 5>,                 
-      < -8.5, 1.4, 5.5>               
-      texture {                  
-         pigment { color Gray } 
-      }                          
- }                                 
-   
-box { <-9, -10, 10>,                
-      < -8.5, 1.4, 9.5>            
-      texture {                  
-         pigment { color Gray }
-      }                          
- }
-  
-   
-box { <-3.8, -10, 10>,                
-      < -10.7, -9.5, 9.5>               
-      texture {                  
-         pigment { color Gray }
-      }                          
- }  
- 
-box { <-3.8, -10, 5>,                
-      <-10.7, -9.5, 5.5>               
-      texture {                  
-         pigment { color Gray }
-      }                          
- }
- 
-  
-
-box { <-9, -10, 5>,                 
-      <-8.5, -9.5, 10>               
-      texture {                  
-         pigment { color Gray }  
-      }                          
- } 
-
-// Iia neaaieai 
-box { <-8.5, -4, 10>,                
-      <-5, -4.5, 9.5>               
-      texture {                  
-         pigment { color Gray } 
-      }                          
- }  
- 
-box { <-8.5, -4, 5>,              
-      <-5, -4.5, 5.5>               
-      texture {                  
-         pigment { color Gray } 
-      }                          
- }
-
-
-box { <-8.5, -1, 5>,            
-      < -8.3, 2, 10>            
-      texture {                  
-         pigment { wood }  
-      }                          
- }   
-
-// ========== ЗАКЛЁПКИ НА СПИНКЕ (2 болта ПО ЦЕНТРУ, ВНУТРИ) ==========
-// Верхний болт по центру спинки
-cylinder { 
-   <-8.4, 1.2, 9.95>, 
-   <-8.4, 1.2, 10.15>, 
-   0.1
-   texture { 
-      pigment { color rgb <0.7, 0.7, 0.75> } 
-      finish { specular 0.8 roughness 0.01 metallic }
-   }
+camera {
+    location <20, 15, 25>
+    look_at <5, 7, 0>
+    angle 50
 }
 
-// Нижний болт по центру спинки
-cylinder { 
-   <-8.4, 0.2, 9.95>, 
-   <-8.4, 0.2, 10.15>, 
-   0.1
-   texture { 
-      pigment { color rgb <0.7, 0.7, 0.75> } 
-      finish { specular 0.8 roughness 0.01 metallic }
-   }
+background { color rgb<0.2, 0.4, 0.8> }
+light_source { <50, 100, -50> color rgb 1 }
+light_source { <-20, 30, 40> color rgb 0.5 } // Добавим подсветку
+
+plane {
+    y, 0
+    pigment { checker color Black, color Green scale 10 }
 }
 
-// Шляпки болтов (шестигранный вид через цилиндр с фаской)
-#macro BoltHead(x, y, z)
-   union {
-      // Основная шляпка
-      cylinder { <x, y, z-0.02>, <x, y, z+0.02>, 0.13 }
-      // Фаска (маленький цилиндр сверху)
-      cylinder { <x, y, z-0.01>, <x, y, z+0.01>, 0.1 }
-      // Крестообразный шлиц
-      box { <x-0.06, y, z-0.03>, <x+0.06, y, z+0.03> }
-      box { <x-0.03, y, z-0.06>, <x+0.03, y, z+0.06> }
-   }
-#end
+// ----------------------------------------------------------
+// МАКРОС: Бутылка с заданным цветом сиропа
+// Параметр: SyrupColor - цвет жидкости внутри
+// ----------------------------------------------------------
+#macro Bottle(SyrupColor)
+union {
+    // ----- ВНЕШНЕЕ СТЕКЛО -----
+    sor {
+        13,
+        <0.0, 0.0>,
+        <1.2, 0.0>,
+        <1.4, 0.5>,
+        <1.6, 1.5>,
+        <1.6, 5.5>,
+        <1.5, 7.0>,
+        <1.2, 8.0>,
+        <0.9, 8.8>,
+        <0.75, 9.5>,
+        <0.75, 12.0>,
+        <0.8, 12.3>,
+        <0.7, 12.5>,
+        <0.0, 12.7>
+        open
+        texture {
+            pigment { color rgbt <1, 1, 1, 0.95> }
+            finish {
+                reflection { 0.15 }
+                specular 0.85
+                roughness 0.02
+            }
+        }
+        interior { ior 1.15 }
+    }
 
-// Шляпки болтов на спинке
-object { BoltHead(-8.4, 1.2, 10.05) texture { pigment { color rgb <0.7, 0.7, 0.75> } finish { specular 0.8 metallic } } }
-object { BoltHead(-8.4, 0.2, 10.05) texture { pigment { color rgb <0.7, 0.7, 0.75> } finish { specular 0.8 metallic } } }
+    // ----- СИРОП (ВНУТРЕННЯЯ ЖИДКОСТЬ) -----
+    // Обратите внимание: он немного меньше внешнего, чтобы избежать артефактов наложения (coincident surfaces)
+    sor {
+        8,
+        <0.0, 0.15>,
+        <1.05, 0.15>,
+        <1.25, 0.6>,
+        <1.45, 1.6>,
+        <1.45, 3.8>,
+        <1.35, 4.2>,
+        <0.95, 5.0>,
+        <0.0, 4.8>
+        open
+        texture {
+            pigment { color SyrupColor filter 0.8 }
+            finish { diffuse 0.9 specular 0.3 }
+        }
+        interior { ior 1.33 } // Вода/сироп
+    }
 
-// ========== ЗАКЛЁПКИ НА СИДЕНЬЕ (4 болта) ==========
-#macro BoltOnSeat(x, z)
-   union {
-      // Цилиндр болта (утоплен в сиденье)
-      cylinder { 
-         <x, -3.95, z>, 
-         <x, -3.73, z>, 
-         0.09
-         texture { 
-            pigment { color rgb <0.7, 0.7, 0.75> } 
-            finish { specular 0.8 roughness 0.01 metallic }
-         }
-      }
-      // Шляпка болта
-      cylinder { <x, -3.72, z>, <x, -3.68, z>, 0.13 }
-      cylinder { <x, -3.71, z>, <x, -3.69, z>, 0.1 }
-      // Шлиц
-      box { <x-0.06, -3.7, z-0.02>, <x+0.06, -3.69, z+0.02> }
-      box { <x-0.02, -3.7, z-0.06>, <x+0.02, -3.69, z+0.06> }
-   }
-#end
+    // ----- КРЫШКА (ВСЕ ЦИЛИНДРЫ СОБРАНЫ В UNION) -----
+    union {
+        cylinder { <0, 12.4, 0>, <0, 13.0, 0>, 0.9 }
+        cylinder { <0, 13.0, 0>, <0, 15.5, 0>, 0.3 }
+        cylinder { <0, 13.0, 0>, <0, 13.5, 0>, 0.5 }
+        cylinder { <0, 15.5, 0>, <0, 16.0, 0>, 0.5 }
+        cylinder { <0, 15.3, 1.5>, <0, 15.6, 1.5>, 0.2 } // Этот у вас смещен по Z, возможно это кнопка спрея
+        
+        texture { 
+            pigment { color White } 
+            finish { specular 0.5 roughness 0.05 }
+        }
+    }
 
-// 4 болта на сиденье
-object { BoltOnSeat(-7.5, 5.2) }
-object { BoltOnSeat(-5.5, 5.2) }
-object { BoltOnSeat(-7.5, 9.7) }
-object { BoltOnSeat(-5.5, 9.7) }
+} // Конец union
+#end // Конец макроса
 
-// ========== ОСТАЛЬНЫЕ ДЕТАЛИ ==========
- 
-box { <-10.7, -10, 10>,                
-      < -11.2, -9.5, 9.5>               
-      texture {                  
-         pigment { color Black }
-      }                          
- }  
- 
-box { <-10.7, -10, 5>,                
-      <-11.2, -9.5, 5.5>            
-      texture {                  
-         pigment { color Black }
-      }                          
- } 
- 
-box { <-3.3, -10, 10>,               
-      < -3.8, -9.5, 9.5>               
-      texture {                  
-         pigment { color Black } 
-      }                          
- } 
- 
-box { <-3.3, -10, 5>,              
-      <-3.8, -9.5, 5.5>               
-      texture {                  
-         pigment { color Black }  
-      }                          
- }  
- 
-box { <-5, -4, 10>,                
-      <-4.9, -4.5, 9.5>               
-      texture {                  
-         pigment { color Black } 
-      }                          
- }  
- 
-box { <-5, -4, 5>,               
-      <-4.9, -4.5, 5.5>               
-      texture {                  
-         pigment { color Black } 
-      }                          
- } 
- 
-box { <-9, 1.4, 5>,               
-      < -8.5, 1.5, 5.5>               
-      texture {                  
-         pigment { color Black }  
-      }                          
- } 
- 
-box { <-9, 1.4, 10>,               
-      < -8.5, 1.5, 9.5>               
-      texture {                  
-         pigment { color Black }
-      }                          
- }
+// ----------------------------------------------------------
+// РАССТАНОВКА 4-х БУТЫЛОК
+// ----------------------------------------------------------
+
+// 1. Оригинальная (Желтая) - в центре чуть левее
+object { Bottle(color Yellow) translate <0, 0, 0> }
+
+// 2. Красный сироп
+object { Bottle(color Red) translate <5, 0, 0> }
+
+// 3. Синий сироп
+object { Bottle(color Blue) translate <10, 0, 0> }
+
+// 4. Зеленый сироп
+object { Bottle(color Green) translate <15, 0, 0> }
