@@ -1,105 +1,292 @@
 #include "colors.inc"
-#include "golds.inc"
-#include "glass.inc"  // Для красивого стекла (опционально)
+#include "textures.inc" 
+#include "butt.pov"
+ camera {
+   location <5, 8, -35>
+   look_at <2, 9, 0>
+ }
 
-camera {
-    location <20, 15, 25>
-    look_at <5, 7, 0>
-    angle 50
+ light_source { <-3, 10, -3> White  }
+ 
+ background{ NeonBlue}           //Цвет фона ,а точнее неба на рисунке  
+ 
+ 
+ plane{ y,-10
+          pigment { checker White,Black scale 3 }
+ }
+ //Построение параллелепипеда. 
+#declare stool=union{
+ box { <0, 0, 0>,                //Нижний ближний левый угол 
+      < 21, 0.5, 13>               //Дальний верхний правый угол
+      texture {                  
+         pigment { color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+      }                          
+ }
+                                
 }
 
-background { color rgb<0.2, 0.4, 0.8> }
-light_source { <50, 100, -50> color rgb 1 }
-light_source { <-20, 30, 40> color rgb 0.5 } // Добавим подсветку
+#declare skaf=union{
+ object{
+    stool
+ }
 
-plane {
-    y, 0
-    pigment { checker color Black, color Green scale 10 }
+ object{
+    stool
+ translate<0,-9,0>
 }
 
-// ----------------------------------------------------------
-// МАКРОС: Бутылка с заданным цветом сиропа
-// Параметр: SyrupColor - цвет жидкости внутри
-// ----------------------------------------------------------
-#macro Bottle(SyrupColor)
-union {
-    // ----- ВНЕШНЕЕ СТЕКЛО -----
-    sor {
-        13,
-        <0.0, 0.0>,
-        <1.2, 0.0>,
-        <1.4, 0.5>,
-        <1.6, 1.5>,
-        <1.6, 5.5>,
-        <1.5, 7.0>,
-        <1.2, 8.0>,
-        <0.9, 8.8>,
-        <0.75, 9.5>,
-        <0.75, 12.0>,
-        <0.8, 12.3>,
-        <0.7, 12.5>,
-        <0.0, 12.7>
-        open
-        texture {
-            pigment { color rgbt <1, 1, 1, 0.95> }
-            finish {
-                reflection { 0.15 }
-                specular 0.85
-                roughness 0.02
-            }
-        }
-        interior { ior 1.15 }
-    }
+ object{
+    stool
+ translate<0,-4.5,0>
+}
 
-    // ----- СИРОП (ВНУТРЕННЯЯ ЖИДКОСТЬ) -----
-    // Обратите внимание: он немного меньше внешнего, чтобы избежать артефактов наложения (coincident surfaces)
-    sor {
-        8,
-        <0.0, 0.15>,
-        <1.05, 0.15>,
-        <1.25, 0.6>,
-        <1.45, 1.6>,
-        <1.45, 3.8>,
-        <1.35, 4.2>,
-        <0.95, 5.0>,
-        <0.0, 4.8>
-        open
-        texture {
-            pigment { color SyrupColor filter 0.8 }
-            finish { diffuse 0.9 specular 0.3 }
-        }
-        interior { ior 1.33 } // Вода/сироп
+ object{
+    stool
+    translate<0,17,0>
+}
+ object{
+    stool
+    translate<0,22,0>
+}
+ object { Bottle(color Yellow)scale 0.28 translate <2, 0.8, 10.5> }
+ object { Bottle(color Violet)scale 0.28 translate <4.3, 0.8, 10.5> }
+ object { Bottle(color Blue)scale 0.28 translate <6.3, 0.8, 10.5> }
+ object { Bottle(color Green)scale 0.28 translate <8.4, 0.8, 10.5> }
+                    
+} 
+ object{
+    skaf
+} 
+//Дверки
+#declare boc=union{
+    box { <0, 0, -0.1>,                //Нижний ближний левый угол 
+          < 6.9, -10, -0.1>               //Дальний верхний правый угол
+          texture {                  
+             pigment { wood } //color White -закрасить в белый цвет 
+          }
     }
+}
 
-    // ----- КРЫШКА (ВСЕ ЦИЛИНДРЫ СОБРАНЫ В UNION) -----
-    union {
-        cylinder { <0, 12.4, 0>, <0, 13.0, 0>, 0.9 }
-        cylinder { <0, 13.0, 0>, <0, 15.5, 0>, 0.3 }
-        cylinder { <0, 13.0, 0>, <0, 13.5, 0>, 0.5 }
-        cylinder { <0, 15.5, 0>, <0, 16.0, 0>, 0.5 }
-        cylinder { <0, 15.3, 1.5>, <0, 15.6, 1.5>, 0.2 } // Этот у вас смещен по Z, возможно это кнопка спрея
+object{
+    boc
+}
+object{
+    boc
+    translate<7,0,0>
+}
+
+object{
+    boc
+    translate<14,0,0>
+}
+
+cylinder { 
+   <7.2, 1.5, -9.5>, 
+   <7.2, 1.5, -9.8>, 
+   0.23
+   texture { 
+      pigment {color rgb <0.2, 0.2, 0.2>} 
+   }
+}
+
+cylinder { 
+   <4.6, 1.5, -9.5>, 
+   <4.6, 1.5, -9.8>, 
+   0.23
+   texture { 
+      pigment {color rgb <0.2, 0.2, 0.2>} 
+   }
+}
+
+cylinder { 
+   <12.2, 1.5, -9.5>, 
+   <12.2, 1.5, -9.8>, 
+   0.23
+   texture { 
+      pigment {color rgb <0.2, 0.2, 0.2>} 
+   }
+}
+
+//задняя стена
+#declare zadi=union{
+    box { <0,22, 13>,                //Нижний ближний левый угол 
+          < 21, -10, 13>               //Дальний верхний правый угол
+          texture {                  
+             pigment {wood} //color White -закрасить в белый цвет 
+          }
+    }
+}
+object{
+    zadi
+}
+//Сбоку
+#declare stena=union{
+    box { <0, 0, 0>,                //Нижний ближний левый угол 
+          < 0, -10, 13>               //Дальний верхний правый угол
+          texture {                  
+             pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+          }
+    }
+}
+object{
+    stena
+}
+object{
+    stena
+    translate<21,0,0>
+   }
+   
+#declare verx=union{
+    box { <0, 17, 0>,                //Нижний ближний левый угол 
+          < 0, 22, 13>               //Дальний верхний правый угол
+          texture {                  
+             pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+          }
+    }
+} 
+object{
+    verx
+}
+
+object{
+    verx
+    translate<21,0,0>
+   }
+
+box { <0, 17, 0>,                //Нижний ближний левый угол 
+          < 21, 22, 0>              //x-вправо y-высота z-даль
+          texture {                  
+             pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+          }
+    }
+//машина
+    box { <10, 0, 13>,                //Нижний ближний левый угол 
+          < 13, 17, 2>               //Дальний верхний правый угол
+          texture {                  
+             pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+          }
+}   
+
+    box { <13, 11, 13>,                //Нижний ближний левый угол 
+          < 21, 17, 2>               //Дальний верхний правый угол
+          texture {                  
+             pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+          }
+}
+
+//сироп
+#declare sir=union{
+    box { <0.5, 0, 13>,                //Нижний ближний левый угол 
+          < 0, 17, 9>               //Дальний верхний правый угол
+          texture {                  
+             pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+          }
+    }
+}
+object{
+    sir
+}
+
+object{
+    sir
+    translate<0.6,-3,0>
+   }
+  
+object{
+    sir
+    translate<9.4,-3,0>
+   }
+ 
+object{
+    sir
+    translate<5,-3,0>
+   }
+
+object{
+    sir
+    translate<3,-11,0>
+   }
+   
+object{
+    sir
+    translate<7,-11,0>
+   }
+
+box { <7.5, 8, 13>,                //Нижний ближний левый угол 
+          < 7, 14, 9>               //Дальний верхний правый угол
+          texture {                  
+             pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+          }
+    }  
+box { <3, 8, 13>,                //Нижний ближний левый угол 
+          < 3.5, 14, 9>               //Дальний верхний правый угол
+          texture {                  
+             pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+          }
+    }
+//стекло
+box { <3.9, 12.8, 7>,
+    <8.5, 8.8, 7.8>
+   texture { Glass3 }
+   finish {
         
-        texture { 
-            pigment { color White } 
-            finish { specular 0.5 roughness 0.05 }
-        }
-    }
+   }
+}
+cylinder { 
+   <9.2, 12.5, 7>, 
+   <9.2, 12.5, 7.8>, 
+   0.3
+   texture { 
+      pigment { color Black} 
+   }
+}
+cylinder { 
+   <9.2, 9.5, 7>, 
+   <9.2, 9.5, 7.8>, 
+   0.3
+   texture { 
+      pigment { color Black} 
+   }
+}
+#declare pir=union{
+    box { <1, 0.5, 13>,                //Нижний ближний левый угол 
+      < 9.4, 1, 9>               //Дальний верхний правый угол
+      texture {                  
+         pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+      }                          
+ }
+                                
+}
+object{
+    pir
+} 
 
-} // Конец union
-#end // Конец макроса
+object{
+    pir
+    translate<0,5,0>
+   }
+   
+object{
+    pir
+    translate<0,7.5,0>
+   } 
+   
+object{
+    pir
+    translate<0,13,0>
+   }
+   
+box { <1, 2, 9>,                //Нижний ближний левый угол 
+      < 9.4, 1.8, 9>               //Дальний верхний правый угол
+      texture {                  
+         pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+      }
+   }
+   
+box { <1, 4, 9>,                //Нижний ближний левый угол 
+      < 9.4, 3.8, 9>               //Дальний верхний правый угол
+      texture {                  
+         pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
+      }
+   }
 
-// ----------------------------------------------------------
-// РАССТАНОВКА 4-х БУТЫЛОК
-// ----------------------------------------------------------
-
-// 1. Оригинальная (Желтая) - в центре чуть левее
-object { Bottle(color Yellow) translate <0, 0, 0> }
-
-// 2. Красный сироп
-object { Bottle(color Red) translate <5, 0, 0> }
-
-// 3. Синий сироп
-object { Bottle(color Blue) translate <10, 0, 0> }
-
-// 4. Зеленый сироп
-object { Bottle(color Green) translate <15, 0, 0> }
