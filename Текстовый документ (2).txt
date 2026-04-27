@@ -1,20 +1,19 @@
 #include "colors.inc"
 #include "textures.inc" 
 #include "butt.pov"
- camera {
+camera {
    location <5, 8, -35>
    look_at <2, 9, 0>
  }
 
- light_source { <-3, 10, -3> White  }
- 
- background{ NeonBlue}           //Цвет фона ,а точнее неба на рисунке  
- 
- 
- plane{ y,-10
+light_source { <-3, 10, -3> White  }
+
+background{ NeonBlue}           //Цвет фона ,а точнее неба на рисунке  
+
+plane{ y,-10
           pigment { checker White,Black scale 3 }
  }
- //Построение параллелепипеда. 
+//Построение параллелепипеда. 
 #declare stool=union{
  box { <0, 0, 0>,                //Нижний ближний левый угол 
       < 21, 0.5, 13>               //Дальний верхний правый угол
@@ -48,6 +47,7 @@
     stool
     translate<0,22,0>
 }
+ // Bottles inside the cabinet (these stay)
  object { Bottle(color Yellow)scale 0.28 translate <2, 0.8, 10.5> }
  object { Bottle(color Violet)scale 0.28 translate <4.3, 0.8, 10.5> }
  object { Bottle(color Blue)scale 0.28 translate <6.3, 0.8, 10.5> }
@@ -289,4 +289,3 @@ box { <1, 4, 9>,                //Нижний ближний левый уго�
          pigment {color rgb <0.2, 0.2, 0.2>} //color White -закрасить в белый цвет 
       }
    }
-
